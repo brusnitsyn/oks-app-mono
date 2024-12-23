@@ -11,6 +11,12 @@ const props = defineProps({
     }
 })
 
+const propsData = ref({
+    ...props.controlCall
+})
+
+console.log(propsData.value)
+
 const hasShowUpdateModal = ref(false)
 </script>
 
@@ -22,7 +28,7 @@ const hasShowUpdateModal = ref(false)
         Изменить
     </NButton>
     <AppModal v-model:show="hasShowUpdateModal">
-        <UpdateControlCall :control-call="controlCall" />
+        <UpdateControlCall :control-call="propsData" />
     </AppModal>
 </template>
 

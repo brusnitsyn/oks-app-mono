@@ -23,19 +23,23 @@ const props = defineProps({
     }
 })
 
+const propsData = ref({
+    ...props.controlCall
+})
+
 const form = useForm({
-    med_card_control_call_id: props.controlCall.id,
-    info: null,
-    answers: props.controlCall.answers,
-    survey_result_id: props.controlCall.survey_result_id,
-    control_call_result_id: props.controlCall.control_call_result_id,
-    survey_id: props.controlCall.survey_id,
+    med_card_control_call_id: propsData.value.id,
+    info:  propsData.value.info,
+    answers:  propsData.value.answers,
+    survey_result_id:  propsData.value.survey_result_id,
+    control_call_result_id:  propsData.value.control_call_result_id,
+    survey_id:  propsData.value.survey_id,
     disp_start_at: null
 })
 
 const { updateTitle, updateShow } = inject('modal')
 const { callResults, surveyResults } = inject('patient')
-updateTitle(props.controlCall.name)
+updateTitle(propsData.value.name)
 const shadowSelectedAnswers = ref([])
 const hasShowDispPicker = ref(false)
 const hasShowDisp = computed({
@@ -144,14 +148,14 @@ function hasDisableAnswer(answerId, questionId) {
     }
 }
 
-for (const answerId of Object.values(props.controlCall.answers)) {
-    const findShadow = props.controlCall.survey.survey_answers.find(itm => itm.id === answerId)
+for (const answerId of Object.values(propsData.value.answers)) {
+    const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
     shadowSelectedAnswers.value.push(findShadow)
     hasDisableAnswer(findShadow.id)
 }
 
 function onCheckSurveyAnswer(chapterId, answerId, question) {
-    const findShadow = props.controlCall.survey.survey_answers.find(itm => itm.id === answerId)
+    const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
     const duplicationIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_chapter_question_id === question.id)
 
     if (findShadow.has_show_disp_date_picker === true) {
@@ -233,7 +237,7 @@ function onCloseClick() {
 }
 
 function onSuccessClick() {
-    form.put(route('control.call.update', { controlCall: props.controlCall.id }), {
+    form.put(route('control.call.update', { controlCall: propsData.value.id }), {
         onSuccess: () => {
             updateShow(false)
         }
@@ -253,7 +257,7 @@ function onSuccessClick() {
 
             <NGi span="2">
                 <NCollapse accordion>
-                    <template v-for="(chapter, index) in controlCall.survey.survey_chapters">
+                    <template v-for="(chapter, index) in propsData.survey.survey_chapters">
                         <NCollapseItem :title="chapter.name" :name="index" :disabled="form.control_call_result_id === null">
                             <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
                                 <template v-for="(question, index) in chapter.questions">
@@ -262,7 +266,7 @@ function onSuccessClick() {
                                             <NText class="font-medium">
                                                 {{ index + 1 }}. {{ question.question }}
                                             </NText>
-                                            <NRadioGroup v-model:value="form.answers[question.id]" :disabled="controlCall.called_at !== null || question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
+                                            <NRadioGroup v-model:value="form.answers[question.id]" :disabled="propsData.called_at !== null || question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
                                                 <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                                             </NRadioGroup>
                                         </NSpace>

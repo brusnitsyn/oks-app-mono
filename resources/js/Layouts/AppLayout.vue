@@ -1,6 +1,6 @@
 <script setup>
 import {computed, h, ref} from 'vue'
-import { Head, Link, router } from '@inertiajs/vue3'
+import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {
     NLayout,
     NLayoutHeader,
@@ -44,7 +44,7 @@ const menuOptions = [
         label: () => h(
             Link,
             {
-                href: '/patients',
+                href: '/',
             },
             {
                 default: () => 'Регистр'
@@ -58,6 +58,9 @@ const menuOptions = [
 const currentRoute = computed(() => {
     return router.page.component.substring(0, router.page.component.indexOf('/'))
 })
+
+const characterView = computed(() => usePage().component === 'Patient/Show')
+const heartView = computed(() => usePage().component === 'Patients/Show')
 
 const logout = () => {
     router.post(route('logout'));
@@ -96,7 +99,13 @@ const logout = () => {
                                       @expand="menuCollapsed = false"
                                       :collapsed-trigger-class="menuCollapsed === true ? '!-right-5 !top-1/4' : ''"
                                       trigger-class="!top-1/4" bordered content-class="">
-                            <NMenu :options="menuOptions" :value="currentRoute"/>
+                            <NFlex vertical justify="space-between" class="h-full relative">
+                                <NMenu :options="menuOptions" :value="currentRoute"/>
+                                <NSpace vertical>
+                                    <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" src="/assets/svg/woman.svg" />
+                                    <NImage v-if="heartView" :preview-disabled="true" src="/assets/svg/heart.svg" class="absolute bottom-[15%] px-6" />
+                                </NSpace>
+                            </NFlex>
                         </NLayoutSider>
                         <NLayout :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="" style="background-image: url('/assets/svg/bg.svg')">
                             <main>

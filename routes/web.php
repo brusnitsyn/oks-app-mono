@@ -21,18 +21,19 @@ Route::middleware([
     Route::get('/', [\App\Http\Controllers\PatientController::class, 'index'])->name('patients.index');
     Route::post('/', [\App\Http\Controllers\PatientController::class, 'create'])->name('patients.create');
 
-    Route::prefix('patient')->group(function () {
-        Route::prefix('{patient}')->group(function () {
-            Route::get('/', [\App\Http\Controllers\PatientController::class, 'show'])->name('patients.show');
-            Route::put('/', [\App\Http\Controllers\PatientController::class, 'update'])->name('patients.update');
-        });
-    });
+//    Route::prefix('patient')->group(function () {
+//        Route::prefix('{patient}')->group(function () {
+//            Route::get('/', [\App\Http\Controllers\PatientController::class, 'show'])->name('patients.show');
+//            Route::put('/', [\App\Http\Controllers\PatientController::class, 'update'])->name('patients.update');
+//        });
+//    });
 
     Route::prefix('patient')->group(function () {
         Route::prefix('{patient}')->group(function () {
             Route::get('/', [\App\Http\Controllers\PatientController::class, 'show'])->name('patients.show');
             Route::put('/', [\App\Http\Controllers\PatientController::class, 'update'])->name('patients.update');
             Route::delete('/', [\App\Http\Controllers\PatientController::class, 'delete'])->name('patients.delete');
+            Route::put('/restore', [\App\Http\Controllers\PatientController::class, 'restore'])->name('patients.restore');
         });
     });
 

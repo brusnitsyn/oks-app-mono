@@ -17,29 +17,30 @@ import {
     useThemeVars
 } from "naive-ui";
 import {format} from "date-fns";
-import {router} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
 import AppModal from "@/Components/AppModal.vue";
 import UpdateModalForm from "@/Pages/Patient/Partials/UpdateModalForm.vue";
 import EditControlCallButton from "@/Pages/Patient/Partials/EditControlCallButton.vue";
 import DeleteMedcardForm from "@/Pages/Patient/Partials/DeleteMedcardForm.vue";
 const props = defineProps({
     patient: {
-        type: Object
+        type: Object,
+        required: true
     },
     medDrugsStatuses: {
-        type: Array
+        type: Array,
     },
     medDrugsPeriods: {
-        type: Array
+        type: Array,
     },
     lpus: {
-        type: Array
+        type: Array,
     },
     mkbs: {
-        type: Array
+        type: Array,
     },
     complications: {
-        type: Array
+        type: Array,
     },
     additionalTreatment: {
         type: Array
@@ -54,25 +55,41 @@ const props = defineProps({
         type: Array
     },
 })
-
-provide('patient', {
-    lpus: props.lpus,
-    mkbs: props.mkbs,
-    medDrugsStatuses: props.medDrugsStatuses,
-    medDrugsPeriods: props.medDrugsPeriods,
-    complications: props.complications,
-    additionalTreatment: props.additionalTreatment,
-    callResults: props.callResults,
-    surveyResults: props.surveyResults,
-    reasonCloses: props.reasonCloses
+const propsData = ref({
+    ...props
 })
 
-const fio = computed(() => `${props.patient.family} ${props.patient.name} ${props.patient.ot}`)
+console.log(propsData.value)
+
+provide('patient', {
+    lpus: propsData.value.lpus,
+    mkbs: propsData.value.mkbs,
+    medDrugsStatuses: propsData.value.medDrugsStatuses,
+    medDrugsPeriods: propsData.value.medDrugsPeriods,
+    complications: propsData.value.complications,
+    additionalTreatment: propsData.value.additionalTreatment,
+    callResults: propsData.value.callResults,
+    surveyResults: propsData.value.surveyResults,
+    reasonCloses: propsData.value.reasonCloses
+})
+
+const fio = computed(() => `${propsData.value.patient.family} ${propsData.value.patient.name} ${propsData.value.patient.ot}`)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 function onDeletePatient() {
     showDeleteModal.value = true
 }
+
+function onRestorePatient() {
+    useForm({})
+        .put(route('patients.restore', { patient: propsData.value.patient.id }), {
+            onSuccess: () => {
+                router.visit(route('patients.show', { patient: propsData.value.patient.id }))
+            }
+        })
+}
+
+const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_reason_close !== null ? true : false)
 </script>
 
 <template>
@@ -90,21 +107,27 @@ function onDeletePatient() {
                                         </template>
                                     </NButton>
                                     <NFlex justify="space-between" align="center">
-                                        <NText class="text-lg font-bold">
-                                            {{ fio }}
-                                        </NText>
-                                        <NButton v-if="patient.last_medcard.med_card_reason_close === null" type="error" @click="onDeletePatient">
+                                        <NSpace vertical :size="0">
+                                            <NText class="text-lg font-bold">
+                                                {{ fio }}
+                                            </NText>
+                                            <NText v-if="hasDeleted">
+                                                Снят по причине: {{ propsData.patient.last_medcard.med_card_reason_close.name }}
+                                            </NText>
+                                        </NSpace>
+
+                                        <NButton v-if="!hasDeleted" type="error" @click="onDeletePatient">
                                             Снять с регистра
                                         </NButton>
-                                        <NText v-else>
-                                            Снят по причине: {{ patient.last_medcard.med_card_reason_close.name }}
-                                        </NText>
+                                        <NButton v-else type="info" @click="onRestorePatient">
+                                            Вернуть в регистр
+                                        </NButton>
                                     </NFlex>
                                 </template>
                             </NCard>
 
                             <NCard title="Персональная информация" class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-                                <template #header-extra>
+                                <template v-if="!hasDeleted" #header-extra>
                                     <NButton text @click="showEditModal = true">
                                         <template #icon>
                                             <NIcon :component="IconEdit" />
@@ -117,7 +140,7 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>СНИЛС</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.snils">{{ patient.snils }}</NText>
+                                                <NText v-if="propsData.patient.snils">{{ propsData.patient.snils }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -128,7 +151,7 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата рождения</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.brith_at">{{ format(patient.brith_at, 'dd.MM.yyyy') }}</NText>
+                                                <NText v-if="propsData.patient.brith_at">{{ format(propsData.patient.brith_at, 'dd.MM.yyyy') }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -139,7 +162,7 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Номер телефона</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.phone">{{ patient.phone }}</NText>
+                                                <NText v-if="propsData.patient.phone">{{ propsData.patient.phone }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -150,7 +173,7 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Дополнительный номер телефона</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.dop_phone">{{ patient.dop_phone }}</NText>
+                                                <NText v-if="propsData.patient.dop_phone">{{ propsData.patient.dop_phone }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -160,14 +183,14 @@ function onDeletePatient() {
                                 </NList>
                             </NCard>
 
-                            <NCard v-if="patient.last_medcard != null" title="Информация по заболеванию" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
+                            <NCard v-if="propsData.patient.last_medcard != null" title="Информация по заболеванию" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
                                 <NList hoverable>
                                     <NListItem>
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата поступления в стационар</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.last_medcard.recipient_at">
-                                                    {{ format(patient.last_medcard.recipient_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="propsData.patient.last_medcard.recipient_at">
+                                                    {{ format(propsData.patient.last_medcard.recipient_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -179,8 +202,8 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата выписки из стационара</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.last_medcard.extract_at">
-                                                    {{ format(patient.last_medcard.extract_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="propsData.patient.last_medcard.extract_at">
+                                                    {{ format(propsData.patient.last_medcard.extract_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -192,8 +215,8 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата взятия на диспансерный учет</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.last_medcard.disp">
-                                                    {{ format(patient.last_medcard.disp.start_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="propsData.patient.last_medcard.disp">
+                                                    {{ format(propsData.patient.last_medcard.disp.start_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -205,7 +228,7 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Основной диагноз</NText></NGi>
                                             <NGi>
-                                                <NText>{{patient.last_medcard.mkb.ds}} {{ patient.last_medcard.mkb.name }}</NText>
+                                                <NText>{{propsData.patient.last_medcard.mkb.ds}} {{ propsData.patient.last_medcard.mkb.name }}</NText>
                                             </NGi>
                                         </NGrid>
                                     </NListItem>
@@ -214,7 +237,7 @@ function onDeletePatient() {
                                             <NGi><NText>Сопутствующий диагноз</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <template v-for="accompanying in patient.last_medcard.mkb_accompanying" v-if="patient.last_medcard.mkb_accompanying.length">
+                                                    <template v-for="accompanying in propsData.patient.last_medcard.mkb_accompanying" v-if="propsData.patient.last_medcard.mkb_accompanying.length">
                                                         <NText>{{ accompanying.name }}</NText>
                                                     </template>
                                                     <NText v-else>
@@ -229,7 +252,7 @@ function onDeletePatient() {
                                             <NGi><NText>Осложнения</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <template v-for="comp in patient.last_medcard.complications" v-if="patient.last_medcard.complications.length">
+                                                    <template v-for="comp in propsData.patient.last_medcard.complications" v-if="propsData.patient.last_medcard.complications.length">
                                                         <NText>{{ comp.name }}</NText>
                                                     </template>
                                                     <NText v-else>
@@ -244,7 +267,7 @@ function onDeletePatient() {
                                             <NGi><NText>Лекарственные препараты выданы на срок</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <NText v-if="patient.last_medcard.med_drugs_period">{{ patient.last_medcard.med_drugs_period.name }}</NText>
+                                                    <NText v-if="propsData.patient.last_medcard.med_drugs_period">{{ propsData.patient.last_medcard.med_drugs_period.name }}</NText>
                                                     <NText v-else>
                                                         —
                                                     </NText>
@@ -285,10 +308,10 @@ function onDeletePatient() {
 <!--                                    </template>-->
 <!--                                </NEmpty>-->
 <!--                            </NCard>-->
-                            <NCard v-if="patient.last_medcard.control_call != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
+                            <NCard v-if="propsData.patient.last_medcard.control_call != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
                                 <NList :show-divider="false">
                                     <NScrollbar>
-                                        <NListItem v-for="controlCall in patient.last_medcard.control_call" :key="controlCall.id" class="rounded" :style="`backgroundColor: ${controlCall.called_at != null ? '#7FE7C4' : ''}`">
+                                        <NListItem v-for="controlCall in propsData.patient.last_medcard.control_call" :key="controlCall.id" class="rounded min-h-[54px]" :style="`backgroundColor: ${controlCall.called_at != null ? '#7FE7C4' : ''}`">
                                             <NGrid cols="2" class="px-4">
                                                 <NGridItem class="flex items-center gap-x-1">
                                                     <NText class="font-bold">
@@ -299,7 +322,7 @@ function onDeletePatient() {
                                                     </NText>
                                                 </NGridItem>
                                                 <NGridItem class="flex items-center justify-end" align="end">
-                                                    <EditControlCallButton :control-call="controlCall" />
+                                                    <EditControlCallButton v-if="!hasDeleted" :control-call="controlCall" />
                                                     <!--                    <LazySelectControlPointOption v-model="control_point.control_point_option_id" :disabled="control_point.control_point_option_id" @change="value => updateControlPoint(control_point.id, value)" /> -->
                                                 </NGridItem>
                                             </NGrid>

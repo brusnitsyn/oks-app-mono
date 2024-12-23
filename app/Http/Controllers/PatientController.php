@@ -79,12 +79,12 @@ class PatientController extends Controller
             'patients' => $registryPatient,
 
             // Для добавления пациента
-            'medDrugsStatuses' => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
-            'medDrugsPeriods' => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
-            'mkbs' => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
-            'complications' => \App\Models\Complication::all()->except(['id', 'name']),
-            'lpus' => \App\Models\Lpu::all()->except(['id', 'name']),
-            'additionalTreatment' => \App\Models\MedCardAdditionalTreatment::all()->except(['id', 'name']),
+            'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
+            'medDrugsPeriods' => fn () => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
+            'mkbs' => fn () => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
+            'complications' => fn () => \App\Models\Complication::all()->except(['id', 'name']),
+            'lpus' => fn () => \App\Models\Lpu::all()->except(['id', 'name']),
+            'additionalTreatment' => fn () => \App\Models\MedCardAdditionalTreatment::all()->except(['id', 'name']),
         ]);
     }
 
@@ -174,19 +174,19 @@ class PatientController extends Controller
         $patient['last_medcard']['mkb_attendant_ids'] = $mkb_attendant_ids;
 
         return Inertia::render('Patient/Show', [
-            'patient' => $patient,
+            'patient' => fn () => $patient,
 
             // Для редактирования пациента и кт
-            'medDrugsStatuses' => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
-            'medDrugsPeriods' => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
-            'mkbs' => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
-            'complications' => \App\Models\Complication::all()->except(['id', 'name']),
-            'lpus' => \App\Models\Lpu::all()->except(['id', 'name']),
-            'additionalTreatment' => \App\Models\MedCardAdditionalTreatment::all()->except(['id', 'name']),
-            'reasonCloses' => \App\Models\MedCardReasonClose::all()->except(['id', 'name']),
+            'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
+            'medDrugsPeriods' => fn () => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
+            'mkbs' => fn () => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
+            'complications' => fn () => \App\Models\Complication::all()->except(['id', 'name']),
+            'lpus' => fn () => \App\Models\Lpu::all()->except(['id', 'name']),
+            'additionalTreatment' => fn () => \App\Models\MedCardAdditionalTreatment::all()->except(['id', 'name']),
+            'reasonCloses' => fn () => \App\Models\MedCardReasonClose::all()->except(['id', 'name']),
             // кт
-            'callResults' => ControlCallResult::all()->except(['id', 'name']),
-            'surveyResults' => SurveyResult::all()->except(['id', 'name']),
+            'callResults' => fn () => ControlCallResult::all()->except(['id', 'name']),
+            'surveyResults' => fn () => SurveyResult::all()->except(['id', 'name']),
         ]);
     }
 
@@ -270,5 +270,22 @@ class PatientController extends Controller
         $patient->lastMedcard()->delete();
 
         return Redirect::route('patients.index');
+    }
+
+    public function restore(Patient $patient)
+    {
+        $patient->lastMedcard()->restore();
+        $patient->lastMedcard->disp()->restore();
+
+        $patient->lastMedcard()->update([
+            'closed_at' => null,
+            'med_card_reason_close_id' => null,
+        ]);
+
+        $patient->lastMedcard->disp()->update([
+            'closed_at' => null
+        ]);
+
+        return Redirect::route('patients.show', ['patient' => $patient->id]);
     }
 }
