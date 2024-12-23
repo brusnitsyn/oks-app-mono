@@ -199,7 +199,7 @@ const defaultColumns = ref([
 ])
 
 function rowProps(row) {
-    if (row.has_closed != null) { return { class: '!bg-gray-200' } }
+    if (row.has_closed !== false) { return { class: '!bg-gray-200' } }
     return { }
 }
 
