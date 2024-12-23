@@ -18,18 +18,18 @@ class Patient extends Model
 
     public function medcards()
     {
-        return $this->hasMany(Medcard::class)->withTrashed();
+        return $this->hasMany(MedCard::class)->withTrashed();
     }
 
     public function activeMedcard()
     {
-        return $this->hasOne(Medcard::class)
+        return $this->hasOne(MedCard::class)
             ->where('closed_at', null)
             ->where('deleted_at', null);
     }
 
     public function lastMedcard()
     {
-        return $this->hasOne(Medcard::class)->withTrashed()->latest();
+        return $this->hasOne(MedCard::class)->withTrashed()->latest();
     }
 }
