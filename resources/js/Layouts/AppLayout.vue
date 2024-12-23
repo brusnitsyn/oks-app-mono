@@ -13,7 +13,7 @@ import {
     NFlex,
     NButton,
     NIcon,
-    NMessageProvider, NImage
+    NMessageProvider, NImage, NAvatar, NText
 } from 'naive-ui'
 import { IconSettings2, IconUserHexagon, IconUsers } from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
@@ -62,6 +62,10 @@ const currentRoute = computed(() => {
 const characterView = computed(() => usePage().component === 'Patient/Show')
 const heartView = computed(() => usePage().component === 'Patients/Show')
 
+const page = usePage()
+
+const user = ref(page.props.auth.user)
+
 const logout = () => {
     router.post(route('logout'));
 };
@@ -80,15 +84,18 @@ const logout = () => {
                         <NFlex justify="space-between" align="center">
                             <NImage src="/assets/svg/logo.svg" preview-disabled object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
                             <NSpace class="-m-5 -mr-[24px]" :size="0">
-                                <NButton quaternary class=" w-[54px] h-[73px] rounded-none">
-                                    <template #icon>
-                                        <NIcon :component="IconSettings2" size="20"/>
-                                    </template>
-                                </NButton>
-                                <NButton quaternary class=" w-[54px] h-[73px] rounded-none">
-                                    <template #icon>
-                                        <NIcon :component="IconUserHexagon" size="20"/>
-                                    </template>
+                                <NButton quaternary class="h-[73px] rounded-none">
+                                    <NSpace align="center">
+                                        <NSpace vertical align="end" :size="2">
+                                            <NText class="font-semibold">
+                                                {{ user.name }}
+                                            </NText>
+                                            <NText>
+                                                {{ user.login }}
+                                            </NText>
+                                        </NSpace>
+                                        <NAvatar :src="user.profile_photo_url" round size="large" />
+                                    </NSpace>
                                 </NButton>
                             </NSpace>
                         </NFlex>
