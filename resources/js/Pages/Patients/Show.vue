@@ -6,6 +6,7 @@ import ShowDataTable from "@/Pages/Patients/Partials/ShowDataTable.vue";
 import {provide, ref} from "vue";
 import CreateModalForm from "@/Pages/Patients/Partials/CreateModalForm.vue";
 import AppModal from "@/Components/AppModal.vue";
+import DataTableLegend from "@/Pages/Patients/Partials/DataTableLegend.vue";
 
 const props = defineProps({
     patients: {
@@ -54,6 +55,10 @@ const showModalCreatePatient = ref(false)
                 </template>
                 Добавить пациента
             </NButton>
+        </template>
+
+        <template #subheader>
+            <DataTableLegend />
         </template>
 
         <ShowDataTable />

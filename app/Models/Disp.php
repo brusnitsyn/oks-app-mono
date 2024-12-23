@@ -3,18 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Disp extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'start_at',
         'closed_at',
-        'mkb_id',
         'deleted_at',
     ];
-
-    public function mkb()
-    {
-        return $this->belongsTo(Mkb::class);
-    }
 }

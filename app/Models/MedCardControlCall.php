@@ -19,17 +19,18 @@ class MedCardControlCall extends Model
 
     public function med_card()
     {
-        return $this->belongsTo(MedCard::class, 'med_card_id');
-    }
-
-    public function med_control_call_result()
-    {
-
+        return $this->belongsTo(MedCard::class, 'med_card_id')->withTrashed();
     }
 
     public function surveyAnswers()
     {
         return $this->hasMany(MedCardSurveyAnswer::class, 'med_card_control_call_id', 'id');
+    }
+
+    public function answers()
+    {
+        $array = $this->surveyAnswers()->get()->pluck('survey_chapter_answer_id', 'survey_chapter_question_id');
+        return $array;
     }
 
     public function survey()

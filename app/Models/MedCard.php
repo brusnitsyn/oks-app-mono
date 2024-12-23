@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 class MedCard extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'num', // Номер карты
         'recipient_at', // Дата поступления в стационар

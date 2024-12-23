@@ -27,6 +27,20 @@ Route::middleware([
             Route::put('/', [\App\Http\Controllers\PatientController::class, 'update'])->name('patients.update');
         });
     });
+
+    Route::prefix('patient')->group(function () {
+        Route::prefix('{patient}')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PatientController::class, 'show'])->name('patients.show');
+            Route::put('/', [\App\Http\Controllers\PatientController::class, 'update'])->name('patients.update');
+            Route::delete('/', [\App\Http\Controllers\PatientController::class, 'delete'])->name('patients.delete');
+        });
+    });
+
+    Route::prefix('control-call')->group(function () {
+        Route::prefix('{controlCall}')->group(function () {
+            Route::put('/', [\App\Http\Controllers\MedCardControlCallController::class, 'update'])->name('control.call.update');
+        });
+    });
 });
 
 

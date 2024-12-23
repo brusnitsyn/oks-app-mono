@@ -51,12 +51,19 @@ function updateTab(tabIndex) {
 
 function onNextClick() {
     if (isLastTab.value) {
-
-        form.post(route('patients.create'), {
-            onSuccess: () => updateShow(false),
-            onError: (err) => console.log(err)
-        })
-
+        formRef.value?.validate(
+            (errors) => {
+                if (!errors) {
+                    form.post(route('patients.create'), {
+                        onSuccess: () => updateShow(false),
+                        onError: (err) => console.log(err)
+                    })
+                }
+                else {
+                    console.log(errors)
+                }
+            }
+        )
         return
     }
 
@@ -244,39 +251,38 @@ updateTab(0)
 </script>
 
 <template>
+    <NForm :model="form" :rules="rules" ref="formRef">
     <NTabs animated v-model:value="currentTabIndex" @update:value="(value) => updateTab(value)" tab-class="!hidden" pane-class="!p-0 !px-0.5">
         <NTabPane :name="0">
-            <NForm :model="form" :rules="rules">
-                <NGrid cols="3" x-gap="6" y-gap="6">
-                    <NFormItemGi label="Дата рождения" path="patient.brith_at">
-                        <AppDatePicker v-model:value="form.patient.brith_at" />
-                    </NFormItemGi>
-                    <NFormItemGi label="СНИЛС" path="patient.snils">
-                        <InputSnils v-model:value="form.patient.snils" />
-                    </NFormItemGi>
-                    <NFormItemGi />
+            <NGrid cols="3" x-gap="6" y-gap="6">
+                <NFormItemGi label="Дата рождения" path="patient.brith_at">
+                    <AppDatePicker v-model:value="form.patient.brith_at" />
+                </NFormItemGi>
+                <NFormItemGi label="СНИЛС" path="patient.snils">
+                    <InputSnils v-model:value="form.patient.snils" />
+                </NFormItemGi>
+                <NFormItemGi />
 
-                    <NFormItemGi label="Фамилия" path="patient.family">
-                        <NInput placeholder="" v-model:value="form.patient.family" />
-                    </NFormItemGi>
-                    <NFormItemGi label="Имя" path="patient.name">
-                        <NInput placeholder="" v-model:value="form.patient.name" />
-                    </NFormItemGi>
-                    <NFormItemGi label="Отчество" path="patient.ot">
-                        <NInput placeholder="" v-model:value="form.patient.ot" />
-                    </NFormItemGi>
+                <NFormItemGi label="Фамилия" path="patient.family">
+                    <NInput placeholder="" v-model:value="form.patient.family" />
+                </NFormItemGi>
+                <NFormItemGi label="Имя" path="patient.name">
+                    <NInput placeholder="" v-model:value="form.patient.name" />
+                </NFormItemGi>
+                <NFormItemGi label="Отчество" path="patient.ot">
+                    <NInput placeholder="" v-model:value="form.patient.ot" />
+                </NFormItemGi>
 
-                    <NFormItemGi label="Номер телефона" path="patient.phone">
-                        <InputPhone v-model:value="form.patient.phone" />
-                    </NFormItemGi>
-                    <NFormItemGi span="2" label="Дополнительный номер телефона" path="patient.dop_phone">
-                        <InputPhone v-model:value="form.patient.dop_phone" />
-                    </NFormItemGi>
-                </NGrid>
-            </NForm>
+                <NFormItemGi label="Номер телефона" path="patient.phone">
+                    <InputPhone v-model:value="form.patient.phone" />
+                </NFormItemGi>
+                <NFormItemGi span="2" label="Дополнительный номер телефона" path="patient.dop_phone">
+                    <InputPhone v-model:value="form.patient.dop_phone" />
+                </NFormItemGi>
+            </NGrid>
         </NTabPane>
         <NTabPane :name="1">
-            <NForm :model="form" :rules="rules" :ref="formRef">
+
                 <NGrid cols="3" x-gap="6" y-gap="6">
                     <NFormItemGi span="2" label="ЛПУ" path="medcard.lpu_id">
                         <NSelect v-model:value="form.medcard.lpu_id" :options="lpus" value-field="id" label-field="name" placeholder="" />
@@ -317,9 +323,10 @@ updateTab(0)
                         <NSelect placeholder="" v-model:value="form.medcard.med_card_additional_treatment_id" :options="additionalTreatment" value-field="id" label-field="name" />
                     </NFormItemGi>
                 </NGrid>
-            </NForm>
+
         </NTabPane>
     </NTabs>
+    </NForm>
     <!--Навигатор-->
     <div class="mt-4">
         <NFlex align="center" justify="space-between">

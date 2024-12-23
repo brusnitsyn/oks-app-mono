@@ -16,6 +16,7 @@ class SurveyChapterAnswer extends Model
         'has_need_consult_doctor',
         'has_disable_other_answer',
         'has_disable_answers',
+        'has_show_disp_date_picker',
         'disable_answer_ids',
         'enable_answer_ids',
     ];

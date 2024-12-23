@@ -1,11 +1,12 @@
 <script setup>
-import {inject, ref, watch} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import {
+    NButton,
     NCollapse,
-    NCollapseItem,
+    NCollapseItem, NFlex, NForm,
     NFormItemGi, NGi,
     NGrid,
-    NGridItem,
+    NGridItem, NIcon, NInput,
     NRadio,
     NRadioGroup,
     NSelect,
@@ -13,6 +14,8 @@ import {
     NText
 } from "naive-ui";
 import {useForm} from "@inertiajs/vue3";
+import {IconArrowLeft, IconArrowRight, IconCancel, IconCheck} from "@tabler/icons-vue";
+import AppDatePicker from "@/Components/AppDatePicker.vue";
 
 const props = defineProps({
     controlCall: {
@@ -21,14 +24,30 @@ const props = defineProps({
 })
 
 const form = useForm({
-    control_call: {},
-    answers: []
+    med_card_control_call_id: props.controlCall.id,
+    info: null,
+    answers: props.controlCall.answers,
+    survey_result_id: props.controlCall.survey_result_id,
+    control_call_result_id: props.controlCall.control_call_result_id,
+    survey_id: props.controlCall.survey_id,
+    disp_start_at: null
 })
 
 const { updateTitle, updateShow } = inject('modal')
 const { callResults, surveyResults } = inject('patient')
 updateTitle(props.controlCall.name)
 const shadowSelectedAnswers = ref([])
+const hasShowDispPicker = ref(false)
+const hasShowDisp = computed({
+    get() {
+        return hasShowDispPicker.value
+    },
+    set(value) {
+        hasShowDispPicker.value = value
+        if (value === false)
+            form.disp_start_at = null
+    }
+})
 
 function hasDisableAnswer(answerId, questionId) {
     const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
@@ -125,8 +144,8 @@ function hasDisableAnswer(answerId, questionId) {
     }
 }
 
-for (const briefAnswer of Object.values(props.controlCall.survey_answers)) {
-    const findShadow = form.answers.find(itm => itm.id === briefAnswer)
+for (const answerId of Object.values(props.controlCall.answers)) {
+    const findShadow = props.controlCall.survey.survey_answers.find(itm => itm.id === answerId)
     shadowSelectedAnswers.value.push(findShadow)
     hasDisableAnswer(findShadow.id)
 }
@@ -134,6 +153,12 @@ for (const briefAnswer of Object.values(props.controlCall.survey_answers)) {
 function onCheckSurveyAnswer(chapterId, answerId, question) {
     const findShadow = props.controlCall.survey.survey_answers.find(itm => itm.id === answerId)
     const duplicationIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_chapter_question_id === question.id)
+
+    if (findShadow.has_show_disp_date_picker === true) {
+        hasShowDisp.value = true
+    } else if (findShadow.has_show_disp_date_picker === false) {
+        hasShowDisp.value = false
+    }
 
     if (duplicationIndex !== -1) {
         shadowSelectedAnswers.value.splice(duplicationIndex, 1)
@@ -148,41 +173,88 @@ watch(shadowSelectedAnswers.value, (newValue) => {
     console.log(newValue)
     const hasSendSmp = newValue.findIndex(itm => itm.has_send_smp === true)
     if (hasSendSmp !== -1) {
-        form.control_call.survey_result_id = 6
+        form.survey_result_id = 6
         return
     }
 
     const hasSendDoctor = newValue.findIndex(itm => itm.has_send_doctor === true)
     if (hasSendDoctor !== -1) {
-        form.control_call.survey_result_id = 5
+        form.survey_result_id = 5
         return
     }
 
     const hasAttention = newValue.findIndex(itm => itm.has_attention === true)
     if (hasAttention !== -1) {
-        form.control_call.survey_result_id = 4
+        form.survey_result_id = 4
     }
 
     if (hasSendSmp === -1 && hasSendDoctor === -1 && hasAttention === -1) {
-        form.control_call.survey_result_id = 2
+        form.survey_result_id = 2
     }
 })
+
+const messageDefault = 'Это поле обязательно!'
+
+const rules = {
+    'control_call_result_id': [
+        {
+            type: 'number',
+            required: true,
+            message: messageDefault,
+            trigger: ['blur', 'change']
+        }
+    ]
+}
+
+const resultCall = computed({
+    get() {
+        return form.control_call_result_id
+    },
+    set(value) {
+        switch (value) {
+            case 1:
+                form.survey_result_id = null
+                break
+            case 2:
+                form.survey_result_id = 1
+                form.answers = {}
+                break
+            case 3:
+                form.survey_result_id = 1
+                break
+        }
+
+        form.control_call_result_id = value
+    }
+})
+
+function onCloseClick() {
+    updateShow(false)
+}
+
+function onSuccessClick() {
+    form.put(route('control.call.update', { controlCall: props.controlCall.id }), {
+        onSuccess: () => {
+            updateShow(false)
+        }
+    })
+}
 </script>
 
 <template>
-    <NForm>
-        <NGrid cols="2" x-gap="6">
-            <NFormItemGi label="Результат дозвона">
-                <NSelect placeholder="" :options="callResults" label-field="name" value-field="id" />
+    <NForm :model="form" :rules="rules">
+        <NGrid cols="2" x-gap="6" y-gap="6">
+            <NFormItemGi label="Результат дозвона" path="control_call_result_id">
+                <NSelect placeholder="" :options="callResults" v-model:value="resultCall" label-field="name" value-field="id" />
             </NFormItemGi>
-            <NFormItemGi label="Результат опроса">
-                <NSelect disabled v-model:value="form.control_call.survey_result_id" :options="surveyResults" placeholder="" label-field="name" value-field="id" />
+            <NFormItemGi label="Результат опроса" path="control_call.survey_result_id">
+                <NSelect disabled v-model:value="form.survey_result_id" :options="surveyResults" placeholder="" label-field="name" value-field="id" />
             </NFormItemGi>
 
             <NGi span="2">
                 <NCollapse accordion>
                     <template v-for="(chapter, index) in controlCall.survey.survey_chapters">
-                        <NCollapseItem :title="chapter.name" :name="index" :disabled="controlCall.result_call_id === null || form.control_call.control_point_option_id === 1">
+                        <NCollapseItem :title="chapter.name" :name="index" :disabled="form.control_call_result_id === null">
                             <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
                                 <template v-for="(question, index) in chapter.questions">
                                     <NGridItem>
@@ -202,7 +274,35 @@ watch(shadowSelectedAnswers.value, (newValue) => {
                 </NCollapse>
             </NGi>
 
+            <NFormItemGi v-if="hasShowDispPicker" label="Диспансерное наблюдение" class="mt-4">
+                <AppDatePicker v-model:value="form.disp_start_at" />
+            </NFormItemGi>
 
+            <NFormItemGi span="2" label="Комментарий" :class="hasShowDispPicker ? 'mt-0' : 'mt-4'">
+                <NInput type="textarea" placeholder="" :autosize="{
+                    minRows: 3,
+                    maxRows: 3,
+                }" />
+            </NFormItemGi>
+
+            <NGi span="2" class="mt-4">
+                <NFlex align="center" justify="space-between">
+                    <NButton secondary @click="onCloseClick">
+                        <template #icon>
+                            <NIcon :component="IconCancel" />
+                        </template>
+                        Отмена
+                    </NButton>
+                    <NSpace align="center" size="medium">
+                        <NButton type="primary" icon-placement="right" @click="onSuccessClick">
+                            <template #icon>
+                                <NIcon :component="IconCheck" />
+                            </template>
+                            Обновить
+                        </NButton>
+                    </NSpace>
+                </NFlex>
+            </NGi>
         </NGrid>
     </NForm>
 </template>

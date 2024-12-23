@@ -18,7 +18,7 @@ class Patient extends Model
 
     public function medcards()
     {
-        return $this->hasMany(Medcard::class);
+        return $this->hasMany(Medcard::class)->withTrashed();
     }
 
     public function activeMedcard()
@@ -30,6 +30,6 @@ class Patient extends Model
 
     public function lastMedcard()
     {
-        return $this->hasOne(Medcard::class)->latest();
+        return $this->hasOne(Medcard::class)->withTrashed()->latest();
     }
 }

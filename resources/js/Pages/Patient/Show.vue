@@ -21,6 +21,7 @@ import {router} from "@inertiajs/vue3";
 import AppModal from "@/Components/AppModal.vue";
 import UpdateModalForm from "@/Pages/Patient/Partials/UpdateModalForm.vue";
 import EditControlCallButton from "@/Pages/Patient/Partials/EditControlCallButton.vue";
+import DeleteMedcardForm from "@/Pages/Patient/Partials/DeleteMedcardForm.vue";
 const props = defineProps({
     patient: {
         type: Object
@@ -49,6 +50,9 @@ const props = defineProps({
     surveyResults: {
         type: Array
     },
+    reasonCloses: {
+        type: Array
+    },
 })
 
 provide('patient', {
@@ -59,13 +63,15 @@ provide('patient', {
     complications: props.complications,
     additionalTreatment: props.additionalTreatment,
     callResults: props.callResults,
-    surveyResults: props.surveyResults
+    surveyResults: props.surveyResults,
+    reasonCloses: props.reasonCloses
 })
 
 const fio = computed(() => `${props.patient.family} ${props.patient.name} ${props.patient.ot}`)
 const showEditModal = ref(false)
+const showDeleteModal = ref(false)
 function onDeletePatient() {
-
+    showDeleteModal.value = true
 }
 </script>
 
@@ -87,9 +93,12 @@ function onDeletePatient() {
                                         <NText class="text-lg font-bold">
                                             {{ fio }}
                                         </NText>
-                                        <NButton type="error" @click="onDeletePatient">
+                                        <NButton v-if="patient.last_medcard.med_card_reason_close === null" type="error" @click="onDeletePatient">
                                             Снять с регистра
                                         </NButton>
+                                        <NText v-else>
+                                            Снят по причине: {{ patient.last_medcard.med_card_reason_close.name }}
+                                        </NText>
                                     </NFlex>
                                 </template>
                             </NCard>
@@ -183,8 +192,8 @@ function onDeletePatient() {
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата взятия на диспансерный учет</NText></NGi>
                                             <NGi>
-                                                <NText v-if="patient.begin_at">
-                                                    {{ format(patient.disp.begin_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="patient.last_medcard.disp">
+                                                    {{ format(patient.last_medcard.disp.start_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -249,33 +258,33 @@ function onDeletePatient() {
                     </NGi>
                     <NGi span="m:5 l:2">
                         <NSpace vertical :size="16">
-                            <NCard title="История диспансерных наблюдений" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-                                <NList v-if="patient.disps && patient.disps.length">
-                                    <NScrollbar class="max-h-[360px]">
-                                        <NListItem v-for="disp in patient.disps" :key="disp.id">
-                                            <NTooltip>
-                                                {{ disp.main_diagnos?.name }}
-                                                <template #trigger>
-                                                    <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')} - ${format(new Date(disp.end_at), 'dd.MM.yyyy')}`" class="px-4">
-                                                        <template #header-extra>
-                                                            <NButton secondary size="small" @click="showOlderDisp(disp.id)">
-                                                                Подробнее
-                                                            </NButton>
-                                                        </template>
-                                                    </NThing>
-                                                </template>
-                                            </NTooltip>
-                                        </NListItem>
-                                    </NScrollbar>
-                                </NList>
-                                <NEmpty v-else description="В истории диспансерных наблюдений пусто" class="pt-5 pb-4">
-                                    <template #extra>
-                                        <NButton size="small" @click="showAddDisp = true">
-                                            Добавить новое наблюдение
-                                        </NButton>
-                                    </template>
-                                </NEmpty>
-                            </NCard>
+<!--                            <NCard title="История диспансерных наблюдений" class="shadow" :style="{ '&#45;&#45;tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">-->
+<!--                                <NList v-if="patient.disps && patient.disps.length">-->
+<!--                                    <NScrollbar class="max-h-[360px]">-->
+<!--                                        <NListItem v-for="disp in patient.disps" :key="disp.id">-->
+<!--                                            <NTooltip>-->
+<!--                                                {{ disp.main_diagnos?.name }}-->
+<!--                                                <template #trigger>-->
+<!--                                                    <NThing :title="`${format(new Date(disp.begin_at), 'dd.MM.yyyy')} - ${format(new Date(disp.end_at), 'dd.MM.yyyy')}`" class="px-4">-->
+<!--                                                        <template #header-extra>-->
+<!--                                                            <NButton secondary size="small" @click="showOlderDisp(disp.id)">-->
+<!--                                                                Подробнее-->
+<!--                                                            </NButton>-->
+<!--                                                        </template>-->
+<!--                                                    </NThing>-->
+<!--                                                </template>-->
+<!--                                            </NTooltip>-->
+<!--                                        </NListItem>-->
+<!--                                    </NScrollbar>-->
+<!--                                </NList>-->
+<!--                                <NEmpty v-else description="В истории диспансерных наблюдений пусто" class="pt-5 pb-4">-->
+<!--                                    <template #extra>-->
+<!--                                        <NButton size="small" @click="showAddDisp = true">-->
+<!--                                            Добавить новое наблюдение-->
+<!--                                        </NButton>-->
+<!--                                    </template>-->
+<!--                                </NEmpty>-->
+<!--                            </NCard>-->
                             <NCard v-if="patient.last_medcard.control_call != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
                                 <NList :show-divider="false">
                                     <NScrollbar>
@@ -306,6 +315,10 @@ function onDeletePatient() {
 
         <AppModal v-model:show="showEditModal">
             <UpdateModalForm :data="patient" />
+        </AppModal>
+
+        <AppModal v-model:show="showDeleteModal">
+            <DeleteMedcardForm :data="patient" />
         </AppModal>
     </AppLayout>
 </template>

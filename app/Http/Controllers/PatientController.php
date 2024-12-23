@@ -8,6 +8,7 @@ use App\Models\SurveyResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class PatientController extends Controller
@@ -37,25 +38,36 @@ class PatientController extends Controller
                 'disp_status' => $patient->lastMedcard->disp ? 'Взят' : 'Не взят',
                 'med_drugs_status' => $patient->lastMedcard->medDrugsStatus->name,
                 'additional_treatment' => $patient->lastMedcard->medCardAdditionalTreatment->short_name,
+                'has_closed' => (bool)$patient->lastMedcard->closed_at,
                 'day3' => [
                     'call_at' => $patient->lastMedcard->day3->call_at,
-                    'called_at' => $patient->lastMedcard->day3->called_at
+                    'called_at' => $patient->lastMedcard->day3->called_at,
+                    'control_call_result_id' => $patient->lastMedcard->day3->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard->day3->survey_result_id,
                 ],
                 'mes1' => [
                     'call_at' => $patient->lastMedcard->mes1->call_at,
-                    'called_at' => $patient->lastMedcard->mes1->called_at
+                    'called_at' => $patient->lastMedcard->mes1->called_at,
+                    'control_call_result_id' => $patient->lastMedcard->mes1->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard->mes1->survey_result_id,
                 ],
                 'mes3' => [
                     'call_at' => $patient->lastMedcard->mes3->call_at,
-                    'called_at' => $patient->lastMedcard->mes3->called_at
+                    'called_at' => $patient->lastMedcard->mes3->called_at,
+                    'control_call_result_id' => $patient->lastMedcard->mes3->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard->mes3->survey_result_id,
                 ],
                 'mes6' => [
                     'call_at' => $patient->lastMedcard->mes6->call_at,
-                    'called_at' => $patient->lastMedcard->mes6->called_at
+                    'called_at' => $patient->lastMedcard->mes6->called_at,
+                    'control_call_result_id' => $patient->lastMedcard->mes6->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard->mes6->survey_result_id,
                 ],
                 'mes12' => [
                     'call_at' => $patient->lastMedcard->mes12->call_at,
-                    'called_at' => $patient->lastMedcard->mes12->called_at
+                    'called_at' => $patient->lastMedcard->mes12->called_at,
+                    'control_call_result_id' => $patient->lastMedcard->mes12->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard->mes12->survey_result_id,
                 ],
                 'phone' => $patient->phone
             ];
@@ -150,6 +162,10 @@ class PatientController extends Controller
             'lastMedcard.control_call.survey.surveyAnswers',
         ])->find($patient->id);
 
+        foreach ($patient->lastMedcard->control_call as $cc) {
+            $cc->answers = $cc->answers();
+        }
+
         $complication_ids = $patient->lastMedcard->complication_ids->pluck('id');
         $mkb_attendant_ids = $patient->lastMedcard->mkb_attendant_ids->pluck('id');
 
@@ -167,6 +183,7 @@ class PatientController extends Controller
             'complications' => \App\Models\Complication::all()->except(['id', 'name']),
             'lpus' => \App\Models\Lpu::all()->except(['id', 'name']),
             'additionalTreatment' => \App\Models\MedCardAdditionalTreatment::all()->except(['id', 'name']),
+            'reasonCloses' => \App\Models\MedCardReasonClose::all()->except(['id', 'name']),
             // кт
             'callResults' => ControlCallResult::all()->except(['id', 'name']),
             'surveyResults' => SurveyResult::all()->except(['id', 'name']),
@@ -231,5 +248,27 @@ class PatientController extends Controller
         }
 
         return \Redirect::route('patients.show', $patient);
+    }
+
+    public function delete(Patient $patient, Request $request)
+    {
+        $data = $request->validate([
+            'med_card_reason_close_id' => ['required', 'numeric'],
+            'closed_at' => ['required', 'numeric'],
+        ]);
+
+        $patient->lastMedcard()->update([
+            'closed_at' => $data['closed_at'],
+            'med_card_reason_close_id' => $data['med_card_reason_close_id'],
+        ]);
+
+        $patient->lastMedcard->disp()->update([
+            'closed_at' => $data['closed_at']
+        ]);
+
+        $patient->lastMedcard->disp()->delete();
+        $patient->lastMedcard()->delete();
+
+        return Redirect::route('patients.index');
     }
 }

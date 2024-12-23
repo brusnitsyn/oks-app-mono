@@ -365,5 +365,26 @@ class SurveySeeder extends Seeder
             'answer' => 'Нет',
             'has_attention' => true
         ]);
+
+        ///
+        /// Диспансерное наблюдение
+        ///
+        $briefQuestionChapter = $survey->surveyChapters()->create([
+            'name' => '10. Диспансерное наблюдение'
+        ]);
+
+        $briefQuestion = $briefQuestionChapter->questions()->create([
+            'question' => 'Взят пациент на диспансерное наблюдение?',
+            'survey_id' => $survey->id
+        ]);
+
+        $briefQuestion->answers()->create([
+            'answer' => 'Взят на диспансерный учет',
+            'has_show_disp_date_picker' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => 'Не взят на диспансерный учет',
+            'has_show_disp_date_picker' => false
+        ]);
     }
 }

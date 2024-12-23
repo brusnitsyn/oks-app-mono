@@ -110,10 +110,10 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.day3.result_call_id)} ${getClassForRowControlOption(row.day3.control_point_option_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.day3.control_call_result_id)} ${getClassForRowControlOption(row.day3.survey_result_id)}`
                 },
                 {
-                    default: () => (row.day3.result_call_id !== null && (row.day3.result_call_id === 1 || row.day3.result_call_id === 3)) ? '' : row.day3.result_call_id === 2 ? format(row.day3.called_at, 'dd.MM') : format(row.day3.call_at, 'dd.MM.yy')
+                    default: () => (row.day3.control_call_result_id !== null && (row.day3.control_call_result_id === 1 || row.day3.control_call_result_id === 3)) ? '' : row.day3.control_call_result_id === 2 ? format(row.day3.called_at, 'dd.MM') : format(row.day3.call_at, 'dd.MM.yy')
                 }
             )
         }
@@ -128,10 +128,10 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes1.result_call_id)} ${getClassForRowControlOption(row.mes1.control_point_option_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes1.control_call_result_id)} ${getClassForRowControlOption(row.mes1.survey_result_id)}`
                 },
                 {
-                    default: () => (row.mes1.result_call_id !== null && (row.mes1.result_call_id === 1 || row.mes1.result_call_id === 3)) ? '' : row.mes1.result_call_id === 2 ? format(row.mes1.called_at, 'dd.MM') : format(row.mes1.call_at, 'dd.MM.yy')
+                    default: () => (row.mes1.control_call_result_id !== null && (row.mes1.control_call_result_id === 1 || row.mes1.control_call_result_id === 3)) ? '' : row.mes1.control_call_result_id === 2 ? format(row.mes1.called_at, 'dd.MM') : format(row.mes1.call_at, 'dd.MM.yy')
                 }
             )
         }
@@ -146,10 +146,10 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes3.result_call_id)} ${getClassForRowControlOption(row.mes3.control_point_option_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes3.control_call_result_id)} ${getClassForRowControlOption(row.mes3.survey_result_id)}`
                 },
                 {
-                    default: () => (row.mes3.result_call_id !== null && (row.mes3.result_call_id === 1 || row.mes3.result_call_id === 3)) ? '' : row.mes3.result_call_id === 2 ? format(row.mes3.called_at, 'dd.MM') : format(row.mes3.call_at, 'dd.MM.yy')
+                    default: () => (row.mes3.control_call_result_id !== null && (row.mes3.control_call_result_id === 1 || row.mes3.control_call_result_id === 3)) ? '' : row.mes3.control_call_result_id === 2 ? format(row.mes3.called_at, 'dd.MM') : format(row.mes3.call_at, 'dd.MM.yy')
                 }
             )
         }
@@ -164,10 +164,10 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.mes6.result_call_id)} ${getClassForRowControlOption(row.mes6.control_point_option_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.mes6.control_call_result_id)} ${getClassForRowControlOption(row.mes6.survey_result_id)}`
                 },
                 {
-                    default: () => (row.mes6.result_call_id !== null && (row.mes6.result_call_id === 1 || row.mes6.result_call_id === 3)) ? '' : row.mes6.result_call_id === 2 ? format(row.mes6.called_at, 'dd.MM') : format(row.mes6.call_at, 'dd.MM.yy')
+                    default: () => (row.mes6.control_call_result_id !== null && (row.mes6.control_call_result_id === 1 || row.mes6.control_call_result_id === 3)) ? '' : row.mes6.control_call_result_id === 2 ? format(row.mes6.called_at, 'dd.MM') : format(row.mes6.call_at, 'dd.MM.yy')
                 }
             )
         }
@@ -182,10 +182,10 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes12.result_call_id)} ${getClassForRowControlOption(row.mes12.control_point_option_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes12.control_call_result_id)} ${getClassForRowControlOption(row.mes12.survey_result_id)}`
                 },
                 {
-                    default: () => (row.mes12.result_call_id !== null && (row.mes12.result_call_id === 1 || row.mes12.result_call_id === 3)) ? '' : row.mes12.result_call_id === 2 ? format(row.mes12.called_at, 'dd.MM') : format(row.mes12.call_at, 'dd.MM.yy')
+                    default: () => (row.mes12.control_call_result_id !== null && (row.mes12.control_call_result_id === 1 || row.mes12.control_call_result_id === 3)) ? '' : row.mes12.control_call_result_id === 2 ? format(row.mes12.called_at, 'dd.MM') : format(row.mes12.call_at, 'dd.MM.yy')
                 }
             )
         }
@@ -198,13 +198,20 @@ const defaultColumns = ref([
     },
 ])
 
+function rowProps(row) {
+    if (row.has_closed != null) { return { class: '!bg-gray-200' } }
+    return { }
+}
+
 const { patients } = inject('patients')
 </script>
 
 <template>
     <NDataTable
-        class="max-h-[calc(100vh-248px)] min-h-[calc(100vh-248px)] h-[calc(100vh-248px)]"
+        class="max-h-[calc(100vh-314px)] min-h-[calc(100vh-314px)] h-[calc(100vh-314px)]"
         bordered
+        :row-props="rowProps"
+        :single-line="false"
         :data="patients"
         :columns="defaultColumns" />
 </template>
@@ -212,5 +219,8 @@ const { patients } = inject('patients')
 <style scoped>
 ::v-deep(.n-data-table-th__title) {
     @apply leading-4;
+}
+::v-deep(td) {
+    @apply !bg-transparent;
 }
 </style>
