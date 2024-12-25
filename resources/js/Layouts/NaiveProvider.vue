@@ -1,6 +1,7 @@
 <script setup>
-import {NConfigProvider, NMessageProvider, NDialogProvider} from 'naive-ui'
+import {NConfigProvider} from 'naive-ui'
 import {ruRU, dateRuRU} from 'naive-ui'
+import NMessageContent from "@/Components/Naive/NMessageContent.vue";
 
 const themeConfig = {
     common: {
@@ -13,11 +14,14 @@ const themeConfig = {
 </script>
 
 <template>
-    <NMessageProvider>
-        <NConfigProvider :theme-overrides="themeConfig" :locale="ruRU" :date-locale="dateRuRU">
-            <slot />
-        </NConfigProvider>
-    </NMessageProvider>
+    <NDialogProvider />
+
+    <NConfigProvider :theme-overrides="themeConfig" :locale="ruRU" :date-locale="dateRuRU">
+        <NMessageProvider keep-alive-on-hover>
+            <NMessageContent />
+        </NMessageProvider>
+        <slot />
+    </NConfigProvider>
 </template>
 
 <style scoped>

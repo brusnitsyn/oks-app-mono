@@ -1,7 +1,6 @@
 <script setup>
-import UpdateModalForm from "@/Pages/Patient/Partials/UpdateModalForm.vue";
 import AppModal from "@/Components/AppModal.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import UpdateControlCall from "@/Pages/Patient/Partials/UpdateControlCall.vue";
 import {NButton, NIcon} from "naive-ui";
 import {IconEdit} from '@tabler/icons-vue'
@@ -10,13 +9,6 @@ const props = defineProps({
         type: Object
     }
 })
-
-const propsData = ref({
-    ...props.controlCall
-})
-
-console.log(propsData.value)
-
 const hasShowUpdateModal = ref(false)
 </script>
 
@@ -28,7 +20,7 @@ const hasShowUpdateModal = ref(false)
         Изменить
     </NButton>
     <AppModal v-model:show="hasShowUpdateModal">
-        <UpdateControlCall :control-call="propsData" />
+        <UpdateControlCall :control-call="controlCall" />
     </AppModal>
 </template>
 

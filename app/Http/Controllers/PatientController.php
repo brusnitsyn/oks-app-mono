@@ -8,6 +8,7 @@ use App\Models\SurveyResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -15,7 +16,26 @@ class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::all();
+        $patients = Patient::query();
+
+        if (request('search_value')) {
+            switch(request('search_field')) {
+                case 'fio': {
+                    $fio = explode(' ', request('search_value'));
+
+                    $family = $fio[0];
+                    $name = $fio[1] ?? null;
+                    $ot = $fio[2] ?? null;
+
+                    $patients = $patients->where('family', 'like', '%' . $family . '%')
+                        ->where('name', 'like', '%' . $name . '%')
+                        ->where('ot', 'like', '%' . $ot . '%');
+                }
+            }
+        }
+
+        $patients = $patients->get();
+
         $registryPatient = Collection::empty();
         foreach ($patients as $patient) {
             $patient->load([

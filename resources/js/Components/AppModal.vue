@@ -20,7 +20,7 @@ provide('modal', {
 </script>
 
 <template>
-    <NModal v-model:show="show" :title="title" preset="card" class="max-w-3xl" :bordered="false" size="huge">
+    <NModal v-model:show="show" :mask-closable="false" :title="title" preset="card" class="max-w-3xl" :bordered="false" size="huge">
         <slot />
     </NModal>
 </template>

@@ -13,11 +13,12 @@ import {
     NFlex,
     NButton,
     NIcon,
-    NMessageProvider, NImage, NAvatar, NText
+    NImage, NAvatar, NText
 } from 'naive-ui'
-import { IconSettings2, IconUserHexagon, IconUsers } from '@tabler/icons-vue'
+import {IconDoorExit, IconSettings2, IconUserHexagon, IconUsers} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
+import {useStorage} from "@vueuse/core";
 
 defineProps({
     title: String,
@@ -25,15 +26,15 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
-const switchToTeam = (team) => {
-    router.put(route('current-team.update'), {
-        team_id: team.id,
-    }, {
-        preserveState: false,
-    });
-};
+// const switchToTeam = (team) => {
+//     router.put(route('current-team.update'), {
+//         team_id: team.id,
+//     }, {
+//         preserveState: false,
+//     });
+// };
 
-const menuCollapsed = ref(true)
+const menuCollapsed = useStorage('side-collapsed', false)
 
 function renderIcon(icon) {
     return () => h(NIcon, null, {default: () => h(icon)})
@@ -53,6 +54,15 @@ const menuOptions = [
         key: 'Patients',
         icon: renderIcon(IconUsers)
     }
+]
+
+const userOptions = [
+    {
+        label: 'Выйти из учетной записи',
+        key: 'user-exit',
+        icon: renderIcon(IconDoorExit),
+        onClick: () => logout()
+    },
 ]
 
 const currentRoute = computed(() => {
@@ -84,24 +94,26 @@ const logout = () => {
                         <NFlex justify="space-between" align="center">
                             <NImage src="/assets/svg/logo.svg" preview-disabled object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
                             <NSpace class="-m-5 -mr-[24px]" :size="0">
-                                <NButton quaternary class="h-[73px] rounded-none">
-                                    <NSpace align="center">
-                                        <NSpace vertical align="end" :size="2">
-                                            <NText class="font-semibold">
-                                                {{ user.name }}
-                                            </NText>
-                                            <NText>
-                                                {{ user.login }}
-                                            </NText>
+                                <NDropdown trigger="click" placement="top-end" :options="userOptions" @select="(key, option) => option.onClick()">
+                                    <NButton quaternary class="h-[73px] rounded-none">
+                                        <NSpace align="center">
+                                            <NSpace vertical align="end" :size="2">
+                                                <NText class="font-semibold">
+                                                    {{ user.name }}
+                                                </NText>
+                                                <NText>
+                                                    {{ user.login }}
+                                                </NText>
+                                            </NSpace>
+                                            <NAvatar :src="user.profile_photo_url" round size="large" />
                                         </NSpace>
-                                        <NAvatar :src="user.profile_photo_url" round size="large" />
-                                    </NSpace>
-                                </NButton>
+                                    </NButton>
+                                </NDropdown>
                             </NSpace>
                         </NFlex>
                     </NLayoutHeader>
                     <NLayout has-sider position="absolute" style="top: 73px; bottom: 54px">
-                        <NLayoutSider collapse-mode="width" collapsed-width="0" width="240" :collapsed="menuCollapsed"
+                        <NLayoutSider collapse-mode="width" :collapsed-width="0" width="240" :collapsed="menuCollapsed"
                                       show-trigger @collapse="menuCollapsed = true"
                                       @expand="menuCollapsed = false"
                                       :collapsed-trigger-class="menuCollapsed === true ? '!-right-5 !top-1/4' : ''"
@@ -114,7 +126,7 @@ const logout = () => {
                                 </NSpace>
                             </NFlex>
                         </NLayoutSider>
-                        <NLayout :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="" style="background-image: url('/assets/svg/bg.svg')">
+                        <NLayout :native-scrollbar="false" :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="" style="background-image: url('/assets/svg/bg.svg'); background-">
                             <main>
                                 <NFlex v-if="$slots.header || $slots.headermore" justify="space-between" align="center"
                                        class="mb-5">
@@ -128,9 +140,7 @@ const logout = () => {
                                 <NP v-if="$slots.subheader">
                                     <slot name="subheader"/>
                                 </NP>
-                                <NMessageProvider>
-                                    <slot/>
-                                </NMessageProvider>
+                                <slot/>
                             </main>
                         </NLayout>
                     </NLayout>
@@ -148,3 +158,9 @@ const logout = () => {
         </div>
     </NaiveProvider>
 </template>
+
+<style scoped>
+:deep(.v-binder-follower-content >>> .n-popover-shared) {
+    @apply !mt-0;
+}
+</style>

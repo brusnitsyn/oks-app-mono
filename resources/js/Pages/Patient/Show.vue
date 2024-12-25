@@ -14,66 +14,20 @@ import {
     NScrollbar,
     NSpace,
     NText,
-    useThemeVars
+    useThemeVars,
+    useMessage,
 } from "naive-ui";
 import {format} from "date-fns";
-import {router, useForm} from "@inertiajs/vue3";
+import {router, useForm, usePage} from "@inertiajs/vue3";
 import AppModal from "@/Components/AppModal.vue";
 import UpdateModalForm from "@/Pages/Patient/Partials/UpdateModalForm.vue";
 import EditControlCallButton from "@/Pages/Patient/Partials/EditControlCallButton.vue";
 import DeleteMedcardForm from "@/Pages/Patient/Partials/DeleteMedcardForm.vue";
-const props = defineProps({
-    patient: {
-        type: Object,
-        required: true
-    },
-    medDrugsStatuses: {
-        type: Array,
-    },
-    medDrugsPeriods: {
-        type: Array,
-    },
-    lpus: {
-        type: Array,
-    },
-    mkbs: {
-        type: Array,
-    },
-    complications: {
-        type: Array,
-    },
-    additionalTreatment: {
-        type: Array
-    },
-    callResults: {
-        type: Array
-    },
-    surveyResults: {
-        type: Array
-    },
-    reasonCloses: {
-        type: Array
-    },
-})
-const propsData = ref({
-    ...props
-})
+const page = usePage()
 
-console.log(propsData.value)
+const patient = computed(() => page.props.patient)
 
-provide('patient', {
-    lpus: propsData.value.lpus,
-    mkbs: propsData.value.mkbs,
-    medDrugsStatuses: propsData.value.medDrugsStatuses,
-    medDrugsPeriods: propsData.value.medDrugsPeriods,
-    complications: propsData.value.complications,
-    additionalTreatment: propsData.value.additionalTreatment,
-    callResults: propsData.value.callResults,
-    surveyResults: propsData.value.surveyResults,
-    reasonCloses: propsData.value.reasonCloses
-})
-
-const fio = computed(() => `${propsData.value.patient.family} ${propsData.value.patient.name} ${propsData.value.patient.ot}`)
+const fio = computed(() => `${patient.value.family} ${patient.value.name} ${patient.value.ot}`)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 function onDeletePatient() {
@@ -82,14 +36,15 @@ function onDeletePatient() {
 
 function onRestorePatient() {
     useForm({})
-        .put(route('patients.restore', { patient: propsData.value.patient.id }), {
+        .put(route('patients.restore', { patient: patient.value.id }), {
             onSuccess: () => {
-                router.visit(route('patients.show', { patient: propsData.value.patient.id }))
+                window.$message.success('Пациент возвращен')
+                router.visit(route('patients.show', { patient: patient.value.id }), { preserveState: ['patient'] })
             }
         })
 }
 
-const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_reason_close !== null ? true : false)
+const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_close !== null ? true : false)
 </script>
 
 <template>
@@ -112,7 +67,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                                 {{ fio }}
                                             </NText>
                                             <NText v-if="hasDeleted">
-                                                Снят по причине: {{ propsData.patient.last_medcard.med_card_reason_close.name }}
+                                                Снят по причине: {{ patient.last_medcard.med_card_reason_close.name }}
                                             </NText>
                                         </NSpace>
 
@@ -140,7 +95,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>СНИЛС</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.snils">{{ propsData.patient.snils }}</NText>
+                                                <NText v-if="patient.snils">{{ patient.snils }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -151,7 +106,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата рождения</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.brith_at">{{ format(propsData.patient.brith_at, 'dd.MM.yyyy') }}</NText>
+                                                <NText v-if="patient.brith_at">{{ format(patient.brith_at, 'dd.MM.yyyy') }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -162,7 +117,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Номер телефона</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.phone">{{ propsData.patient.phone }}</NText>
+                                                <NText v-if="patient.phone">{{ patient.phone }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -173,7 +128,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Дополнительный номер телефона</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.dop_phone">{{ propsData.patient.dop_phone }}</NText>
+                                                <NText v-if="patient.dop_phone">{{ patient.dop_phone }}</NText>
                                                 <NText v-else>
                                                     —
                                                 </NText>
@@ -183,14 +138,14 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                 </NList>
                             </NCard>
 
-                            <NCard v-if="propsData.patient.last_medcard != null" title="Информация по заболеванию" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
+                            <NCard v-if="patient.last_medcard != null" title="Информация по заболеванию" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
                                 <NList hoverable>
                                     <NListItem>
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата поступления в стационар</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.last_medcard.recipient_at">
-                                                    {{ format(propsData.patient.last_medcard.recipient_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="patient.last_medcard.recipient_at">
+                                                    {{ format(patient.last_medcard.recipient_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -202,8 +157,8 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата выписки из стационара</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.last_medcard.extract_at">
-                                                    {{ format(propsData.patient.last_medcard.extract_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="patient.last_medcard.extract_at">
+                                                    {{ format(patient.last_medcard.extract_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -215,8 +170,8 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Дата взятия на диспансерный учет</NText></NGi>
                                             <NGi>
-                                                <NText v-if="propsData.patient.last_medcard.disp">
-                                                    {{ format(propsData.patient.last_medcard.disp.start_at, 'dd.MM.yyyy') }}
+                                                <NText v-if="patient.last_medcard.disp">
+                                                    {{ format(patient.last_medcard.disp.start_at, 'dd.MM.yyyy') }}
                                                 </NText>
                                                 <NText v-else>
                                                     —
@@ -228,7 +183,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                         <NGrid :cols="2">
                                             <NGi><NText>Основной диагноз</NText></NGi>
                                             <NGi>
-                                                <NText>{{propsData.patient.last_medcard.mkb.ds}} {{ propsData.patient.last_medcard.mkb.name }}</NText>
+                                                <NText>{{patient.last_medcard.mkb.ds}} {{ patient.last_medcard.mkb.name }}</NText>
                                             </NGi>
                                         </NGrid>
                                     </NListItem>
@@ -237,7 +192,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                             <NGi><NText>Сопутствующий диагноз</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <template v-for="accompanying in propsData.patient.last_medcard.mkb_accompanying" v-if="propsData.patient.last_medcard.mkb_accompanying.length">
+                                                    <template v-for="accompanying in patient.last_medcard.mkb_accompanying" v-if="patient.last_medcard.mkb_accompanying.length">
                                                         <NText>{{ accompanying.name }}</NText>
                                                     </template>
                                                     <NText v-else>
@@ -252,7 +207,7 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                             <NGi><NText>Осложнения</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <template v-for="comp in propsData.patient.last_medcard.complications" v-if="propsData.patient.last_medcard.complications.length">
+                                                    <template v-for="comp in patient.last_medcard.complications" v-if="patient.last_medcard.complications.length">
                                                         <NText>{{ comp.name }}</NText>
                                                     </template>
                                                     <NText v-else>
@@ -267,7 +222,20 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
                                             <NGi><NText>Лекарственные препараты выданы на срок</NText></NGi>
                                             <NGi>
                                                 <NSpace vertical :size="0">
-                                                    <NText v-if="propsData.patient.last_medcard.med_drugs_period">{{ propsData.patient.last_medcard.med_drugs_period.name }}</NText>
+                                                    <NText v-if="patient.last_medcard.med_drugs_period">{{ patient.last_medcard.med_drugs_period.name }}</NText>
+                                                    <NText v-else>
+                                                        —
+                                                    </NText>
+                                                </NSpace>
+                                            </NGi>
+                                        </NGrid>
+                                    </NListItem>
+                                    <NListItem>
+                                        <NGrid :cols="2">
+                                            <NGi><NText>Дополнительное лечение</NText></NGi>
+                                            <NGi>
+                                                <NSpace vertical :size="0">
+                                                    <NText v-if="patient.last_medcard.med_card_additional_treatment">{{ patient.last_medcard.med_card_additional_treatment.name }}</NText>
                                                     <NText v-else>
                                                         —
                                                     </NText>
@@ -308,10 +276,10 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
 <!--                                    </template>-->
 <!--                                </NEmpty>-->
 <!--                            </NCard>-->
-                            <NCard v-if="propsData.patient.last_medcard.control_call != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
+                            <NCard v-if="patient.last_medcard.control_call != null" title="Контрольные точки" class="shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(32, 128, 240, 0.5)` }">
                                 <NList :show-divider="false">
                                     <NScrollbar>
-                                        <NListItem v-for="controlCall in propsData.patient.last_medcard.control_call" :key="controlCall.id" class="rounded min-h-[54px]" :style="`backgroundColor: ${controlCall.called_at != null ? '#7FE7C4' : ''}`">
+                                        <NListItem v-for="controlCall in patient.last_medcard.control_call" :key="controlCall.id" class="rounded min-h-[54px]" :style="`backgroundColor: ${controlCall.called_at != null ? '#7FE7C4' : ''}`">
                                             <NGrid cols="2" class="px-4">
                                                 <NGridItem class="flex items-center gap-x-1">
                                                     <NText class="font-bold">
@@ -337,11 +305,11 @@ const hasDeleted = computed(() => propsData.value.patient.last_medcard.med_card_
         </div>
 
         <AppModal v-model:show="showEditModal">
-            <UpdateModalForm :data="patient" />
+            <UpdateModalForm :data="page.props.patient" />
         </AppModal>
 
         <AppModal v-model:show="showDeleteModal">
-            <DeleteMedcardForm :data="patient" />
+            <DeleteMedcardForm :data="page.props.patient" />
         </AppModal>
     </AppLayout>
 </template>

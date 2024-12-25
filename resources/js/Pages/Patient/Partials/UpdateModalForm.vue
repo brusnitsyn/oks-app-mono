@@ -11,7 +11,8 @@ import {
     NSpace,
     NIcon,
     NGi,
-    NSelect
+    NSelect,
+    useMessage
 } from "naive-ui";
 import {computed, inject, ref} from "vue";
 import InputSnils from "@/Components/Inputs/InputSnils.vue";
@@ -20,7 +21,15 @@ import InputPhone from "@/Components/Inputs/InputPhone.vue";
 import AppDatePicker from "@/Components/AppDatePicker.vue";
 import {useForm, usePage} from "@inertiajs/vue3";
 const { updateTitle, updateShow } = inject('modal')
-const { lpus, mkbs, medDrugsStatuses, medDrugsPeriods, complications, additionalTreatment } = inject('patient')
+// const { lpus, mkbs, medDrugsStatuses, medDrugsPeriods, complications, additionalTreatment } = inject('patient')
+const page = usePage()
+
+const lpus = ref(page.props.lpus)
+const mkbs = ref(page.props.mkbs)
+const medDrugsStatuses = ref(page.props.medDrugsStatuses)
+const medDrugsPeriods = ref(page.props.medDrugsPeriods)
+const complications = ref(page.props.complications)
+const additionalTreatment = ref(page.props.additionalTreatment)
 
 const actionButtonTitle = ref('')
 const currentTabIndex = ref(0)
@@ -59,8 +68,11 @@ function onNextClick() {
         formRef.value?.validate(
             (errors) => {
                 if (!errors) {
-                    form.put( route('patients.update', { patient: props.data.id }), {
-                        onSuccess: () => updateShow(false),
+                    form.put(route('patients.update', { patient: props.data.id }), {
+                        onSuccess: () => {
+                            window.$message.success('Пациент успешно обновлен')
+                            updateShow(false)
+                        },
                         onError: (err) => console.log(err)
                     })
                 }
@@ -232,8 +244,8 @@ const rules = {
     ],
 }
 
-const mkbAttendant = computed(() => mkbs.filter((mkb) => mkb.has_attendant === true))
-const mkbMain = computed(() => mkbs.filter((mkb) => mkb.has_attendant === false).map((mkb) => ( { id: mkb.id, name: `${mkb.ds} ${mkb.name}` } )))
+const mkbAttendant = computed(() => mkbs.value.filter((mkb) => mkb.has_attendant === true))
+const mkbMain = computed(() => mkbs.value.filter((mkb) => mkb.has_attendant === false).map((mkb) => ( { id: mkb.id, name: `${mkb.ds} ${mkb.name}` } )))
 
 updateTab(0)
 </script>

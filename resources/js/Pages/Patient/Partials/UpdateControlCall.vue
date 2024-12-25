@@ -13,7 +13,7 @@ import {
     NSpace,
     NText
 } from "naive-ui";
-import {useForm} from "@inertiajs/vue3";
+import {router, useForm, usePage} from "@inertiajs/vue3";
 import {IconArrowLeft, IconArrowRight, IconCancel, IconCheck} from "@tabler/icons-vue";
 import AppDatePicker from "@/Components/AppDatePicker.vue";
 
@@ -23,9 +23,11 @@ const props = defineProps({
     }
 })
 
-const propsData = ref({
-    ...props.controlCall
-})
+// const controlCall = defineModel('controlСall')
+
+const page = usePage()
+
+const propsData = computed(() => props.controlCall)
 
 const form = useForm({
     med_card_control_call_id: propsData.value.id,
@@ -38,7 +40,8 @@ const form = useForm({
 })
 
 const { updateTitle, updateShow } = inject('modal')
-const { callResults, surveyResults } = inject('patient')
+const callResults = ref(page.props.callResults)
+const surveyResults = ref(page.props.surveyResults)
 updateTitle(propsData.value.name)
 const shadowSelectedAnswers = ref([])
 const hasShowDispPicker = ref(false)
@@ -239,6 +242,8 @@ function onCloseClick() {
 function onSuccessClick() {
     form.put(route('control.call.update', { controlCall: propsData.value.id }), {
         onSuccess: () => {
+            window.$message.success('Контрольная точка обновлена')
+            router.reload()
             updateShow(false)
         }
     })

@@ -1,8 +1,12 @@
 <script setup>
 import {h, inject, ref} from "vue";
 import {NDataTable} from "naive-ui";
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
 import {format} from "date-fns";
+
+const page = usePage()
+
+const patients = computed(() => page.props.patients)
 
 function getClassForRowCallResult(result_call_id) {
     switch (result_call_id) {
@@ -202,23 +206,25 @@ function rowProps(row) {
     if (row.has_closed !== false) { return { class: '!bg-gray-200' } }
     return { }
 }
-
-const { patients } = inject('patients')
 </script>
 
 <template>
     <NDataTable
-        class="max-h-[calc(100vh-314px)] min-h-[calc(100vh-314px)] h-[calc(100vh-314px)]"
+        class="max-h-[calc(100vh-348px)] min-h-[calc(100vh-348px)] h-[calc(100vh-348px)]"
+        flex-height
         bordered
         :row-props="rowProps"
         :single-line="false"
-        :data="patients"
+        v-model:data="patients"
         :columns="defaultColumns" />
 </template>
 
 <style scoped>
 ::v-deep(.n-data-table-th__title) {
     @apply leading-4;
+}
+::v-deep(.n-data-table-wrapper) {
+    @apply bg-white;
 }
 ::v-deep(td) {
     @apply !bg-transparent;

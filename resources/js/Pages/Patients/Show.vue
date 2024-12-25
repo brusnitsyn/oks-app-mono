@@ -1,46 +1,36 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import {NButton, NIcon} from "naive-ui";
 import {IconSquareRoundedPlus} from "@tabler/icons-vue";
 import ShowDataTable from "@/Pages/Patients/Partials/ShowDataTable.vue";
-import {provide, ref} from "vue";
 import CreateModalForm from "@/Pages/Patients/Partials/CreateModalForm.vue";
 import AppModal from "@/Components/AppModal.vue";
 import DataTableLegend from "@/Pages/Patients/Partials/DataTableLegend.vue";
+import SearchPatientInput from "@/Pages/Patients/Partials/SearchPatientInput.vue";
+import debounce from "@/Utils/debounce.js";
+import {router, usePage} from "@inertiajs/vue3";
 
-const props = defineProps({
-    patients: {
-        type: Array
+const page = usePage()
+const showModalCreatePatient = ref(false)
+
+const searchValue = ref(page.props.ziggy.query.search_value ?? '')
+const searchValueDebounce = computed({
+    get() {
+        return searchValue.value
     },
-    medDrugsStatuses: {
-        type: Array
-    },
-    medDrugsPeriods: {
-        type: Array
-    },
-    lpus: {
-        type: Array
-    },
-    mkbs: {
-        type: Array
-    },
-    complications: {
-        type: Array
-    },
-    additionalTreatment: {
-        type: Array
+    set(value) {
+        searchValue.value = value
+        debounce(() => {
+            // router.get(route('patients.index'), { search_field: 'fio', search_value: value }, {
+            //     preserveState: true,
+            // })
+
+            router.reload({
+                data: { search_field: 'fio', search_value: value },
+                only: ['patients']
+            })
+        }, 800)
     }
 })
-provide('patients', {
-    lpus: props.lpus,
-    mkbs: props.mkbs,
-    medDrugsStatuses: props.medDrugsStatuses,
-    medDrugsPeriods: props.medDrugsPeriods,
-    complications: props.complications,
-    additionalTreatment: props.additionalTreatment,
-    patients: props.patients
-})
-const showModalCreatePatient = ref(false)
 </script>
 
 <template>
@@ -58,7 +48,10 @@ const showModalCreatePatient = ref(false)
         </template>
 
         <template #subheader>
-            <DataTableLegend />
+            <NSpace vertical>
+                <SearchPatientInput v-model:value="searchValueDebounce" />
+                <DataTableLegend />
+            </NSpace>
         </template>
 
         <ShowDataTable />
@@ -70,7 +63,5 @@ const showModalCreatePatient = ref(false)
 </template>
 
 <style scoped>
-::v-deep(.n-data-table-wrapper) {
- @apply h-[calc(100vh-248px)] bg-white;
-}
+
 </style>

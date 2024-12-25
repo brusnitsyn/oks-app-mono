@@ -11,19 +11,26 @@ import {
     NSpace,
     NIcon,
     NGi,
-    NSelect
+    NSelect,
+    useMessage,
 } from "naive-ui";
 import {computed, inject, ref} from "vue";
 import InputSnils from "@/Components/Inputs/InputSnils.vue";
 import {IconCheck, IconArrowRight, IconArrowLeft, IconCancel} from "@tabler/icons-vue"
 import InputPhone from "@/Components/Inputs/InputPhone.vue";
 import AppDatePicker from "@/Components/AppDatePicker.vue";
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 
 const { updateTitle, updateShow } = inject('modal')
-const { lpus, mkbs, medDrugsStatuses, medDrugsPeriods, complications, additionalTreatment } = inject('patients')
-
-const actionButtonTitle = ref('')
+const page = usePage()
+// const message = useMessage()
+// const { lpus, mkbs, medDrugsStatuses, medDrugsPeriods, complications, additionalTreatment } = inject('patients')
+const lpus = ref(page.props.lpus)
+const mkbs = ref(page.props.mkbs)
+const medDrugsStatuses = ref(page.props.medDrugsStatuses)
+const medDrugsPeriods = ref(page.props.medDrugsPeriods)
+const complications = ref(page.props.complications)
+const additionalTreatment = ref(page.props.additionalTreatment)
 const currentTabIndex = ref(0)
 const tabs = ref([
     'Персональная информация',
@@ -37,13 +44,11 @@ function updateTab(tabIndex) {
     switch (tabIndex) {
         case 0: {
             updateTitle(tabs.value[tabIndex])
-            actionButtonTitle.value = 'Далее'
         }
         break
         case 1: {
             updateTitle(tabs.value[tabIndex])
             isLastTab.value = true
-            actionButtonTitle.value = 'Добавить'
         }
         break
     }
@@ -55,7 +60,10 @@ function onNextClick() {
             (errors) => {
                 if (!errors) {
                     form.post(route('patients.create'), {
-                        onSuccess: () => updateShow(false),
+                        onSuccess: () => {
+                            window.$message.success('Пациент успешно добавлен')
+                            updateShow(false)
+                        },
                         onError: (err) => console.log(err)
                     })
                 }
@@ -83,6 +91,7 @@ function onCloseClick() {
     updateShow(false)
 }
 
+// const filledForm = ref(false)
 const form = useForm({
     patient: {
         family: '',
@@ -105,6 +114,15 @@ const form = useForm({
         med_card_additional_treatment_id: null
     }
 })
+
+// watch(form, () => {
+//     formRef.value?.validate((error) => {
+//         if (error.length > 0) filledForm.value = true
+//         else {
+//             filledForm.value = false
+//         }
+//     })
+// })
 
 const messageDefault = 'Это поле обязательно!'
 
@@ -244,8 +262,8 @@ const rules = {
     ],
 }
 
-const mkbAttendant = computed(() => mkbs.filter((mkb) => mkb.has_attendant === true))
-const mkbMain = computed(() => mkbs.filter((mkb) => mkb.has_attendant === false).map((mkb) => ( { id: mkb.id, name: `${mkb.ds} ${mkb.name}` } )))
+const mkbAttendant = computed(() => mkbs.value.filter((mkb) => mkb.has_attendant === true))
+const mkbMain = computed(() => mkbs.value.filter((mkb) => mkb.has_attendant === false).map((mkb) => ( { id: mkb.id, name: `${mkb.ds} ${mkb.name}` } )))
 
 updateTab(0)
 </script>
@@ -343,12 +361,17 @@ updateTab(0)
                     </template>
                     Назад
                 </NButton>
-                <NButton type="primary" @click="onNextClick" :secondary="!isLastTab" icon-placement="right">
+                <NButton v-if="!isLastTab" type="primary" @click="onNextClick" :secondary="!isLastTab" icon-placement="right">
                     <template #icon>
-                        <NIcon v-if="isLastTab" :component="IconCheck" />
-                        <NIcon v-else :component="IconArrowRight" />
+                        <NIcon :component="IconArrowRight" />
                     </template>
-                    {{ actionButtonTitle }}
+                    Далее
+                </NButton>
+                <NButton v-else type="primary" @click="onNextClick" :disabled="!form.isDirty" icon-placement="right">
+                    <template #icon>
+                        <NIcon :component="IconCheck" />
+                    </template>
+                    Добавить
                 </NButton>
             </NSpace>
         </NFlex>
