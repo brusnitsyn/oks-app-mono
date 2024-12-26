@@ -11,10 +11,10 @@ const patients = computed(() => page.props.patients)
 function getClassForRowCallResult(result_call_id) {
     switch (result_call_id) {
         case 1:
-            return 'bg-green-300 mx-3'
+            return 'bg-green-300 mx-2'
         case 2:
         case 3:
-            return 'bg-transparent mx-3'
+            return 'bg-transparent'
     }
 }
 
@@ -29,7 +29,7 @@ function getClassForRowControlOption(control_point_option_id) {
         case 6:
             return 'border-red-700'
         case 1:
-            return 'border-black'
+            return 'border-black mx-2'
         case null:
             return 'border-transparent'
     }
@@ -109,12 +109,12 @@ const defaultColumns = ref([
         width: 70,
         key: 'day3',
         align: 'center',
-        className: 'relative day3',
+        className: 'relative day3 !p-0 h-[34px] !px-1',
         render(row) {
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.day3.control_call_result_id)} ${getClassForRowControlOption(row.day3.survey_result_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.day3.control_call_result_id)} ${getClassForRowControlOption(row.day3.survey_result_id)}`
                 },
                 {
                     default: () => (row.day3.control_call_result_id !== null && (row.day3.control_call_result_id === 1 || row.day3.control_call_result_id === 3)) ? '' : row.day3.control_call_result_id === 2 ? format(row.day3.called_at, 'dd.MM') : format(row.day3.call_at, 'dd.MM.yy')
@@ -127,12 +127,12 @@ const defaultColumns = ref([
         width: 70,
         key: 'mes1',
         align: 'center',
-        className: 'relative mes1',
+        className: 'relative mes1 !p-0 h-[34px] !px-1',
         render(row) {
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes1.control_call_result_id)} ${getClassForRowControlOption(row.mes1.survey_result_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes1.control_call_result_id)} ${getClassForRowControlOption(row.mes1.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes1.control_call_result_id !== null && (row.mes1.control_call_result_id === 1 || row.mes1.control_call_result_id === 3)) ? '' : row.mes1.control_call_result_id === 2 ? format(row.mes1.called_at, 'dd.MM') : format(row.mes1.call_at, 'dd.MM.yy')
@@ -144,13 +144,13 @@ const defaultColumns = ref([
         title: '3 мес',
         width: 70,
         key: 'mes3',
-        className: 'relative mes3',
+        className: 'relative mes3 !p-0 h-[34px] !px-1',
         align: 'center',
         render(row) {
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes3.control_call_result_id)} ${getClassForRowControlOption(row.mes3.survey_result_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes3.control_call_result_id)} ${getClassForRowControlOption(row.mes3.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes3.control_call_result_id !== null && (row.mes3.control_call_result_id === 1 || row.mes3.control_call_result_id === 3)) ? '' : row.mes3.control_call_result_id === 2 ? format(row.mes3.called_at, 'dd.MM') : format(row.mes3.call_at, 'dd.MM.yy')
@@ -162,13 +162,13 @@ const defaultColumns = ref([
         title: '6 мес',
         width: 70,
         key: 'mes6',
-        className: 'relative mes6',
+        className: 'relative mes6 !p-0 h-[34px] !px-1',
         align: 'center',
         render(row) {
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4  absolute inset-0 ${getClassForRowCallResult(row.mes6.control_call_result_id)} ${getClassForRowControlOption(row.mes6.survey_result_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes6.control_call_result_id)} ${getClassForRowControlOption(row.mes6.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes6.control_call_result_id !== null && (row.mes6.control_call_result_id === 1 || row.mes6.control_call_result_id === 3)) ? '' : row.mes6.control_call_result_id === 2 ? format(row.mes6.called_at, 'dd.MM') : format(row.mes6.call_at, 'dd.MM.yy')
@@ -180,13 +180,13 @@ const defaultColumns = ref([
         title: '12 мес',
         width: 70,
         key: 'mes12',
-        className: 'relative mes12',
+        className: 'relative mes12 !p-0 h-[34px]',
         align: 'center',
         render(row) {
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 absolute inset-0 ${getClassForRowCallResult(row.mes12.control_call_result_id)} ${getClassForRowControlOption(row.mes12.survey_result_id)}`
+                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes12.control_call_result_id)} ${getClassForRowControlOption(row.mes12.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes12.control_call_result_id !== null && (row.mes12.control_call_result_id === 1 || row.mes12.control_call_result_id === 3)) ? '' : row.mes12.control_call_result_id === 2 ? format(row.mes12.called_at, 'dd.MM') : format(row.mes12.call_at, 'dd.MM.yy')

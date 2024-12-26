@@ -8,7 +8,7 @@ import AppDatePicker from "@/Components/AppDatePicker.vue";
 const { updateTitle, updateShow } = inject('modal')
 updateTitle('Снятие с регистра')
 const page = usePage()
-const reasonCloses = ref({ ...page.props.reasonCloses })
+const reasonCloses = computed(() => page.props.reasonCloses)
 const formRef = ref()
 
 const props = defineProps({
@@ -78,7 +78,7 @@ function onSuccessClick() {
                 <NSelect  placeholder="" :options="reasonCloses" v-model:value="form.med_card_reason_close_id" label-field="name" value-field="id"  />
             </NFormItemGi>
 
-            <NGi span="2" class="mt-4 pb-7">
+            <NGi span="2" class="mt-4">
                 <NFlex align="center" justify="space-between">
                     <NButton secondary @click="onCloseClick">
                         <template #icon>

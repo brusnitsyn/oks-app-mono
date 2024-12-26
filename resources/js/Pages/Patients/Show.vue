@@ -24,13 +24,17 @@ const searchValueDebounce = computed({
             //     preserveState: true,
             // })
 
-            router.reload({
-                data: { search_field: 'fio', search_value: value },
-                only: ['patients']
-            })
+            onSearch()
         }, 800)
     }
 })
+
+function onSearch() {
+    router.reload({
+        data: { search_field: 'fio', search_value: searchValue.value },
+        only: ['patients']
+    })
+}
 </script>
 
 <template>
@@ -49,7 +53,7 @@ const searchValueDebounce = computed({
 
         <template #subheader>
             <NSpace vertical>
-                <SearchPatientInput v-model:value="searchValueDebounce" />
+                <SearchPatientInput v-model:value="searchValueDebounce" @click="onSearch" />
                 <DataTableLegend />
             </NSpace>
         </template>

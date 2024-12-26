@@ -27,7 +27,7 @@ class PatientController extends Controller
                     $name = $fio[1] ?? null;
                     $ot = $fio[2] ?? null;
 
-                    $patients = $patients->where('family', 'like', '%' . $family . '%')
+                    $patients = $patients->where('family', 'ilike', '%' . $family . '%')
                         ->where('name', 'like', '%' . $name . '%')
                         ->where('ot', 'like', '%' . $ot . '%');
                 }

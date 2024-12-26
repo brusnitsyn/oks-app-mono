@@ -88,8 +88,8 @@ const logout = () => {
 
             <Banner/>
 
-            <div class="h-screen max-h-screen bg-gray-100">
-                <NLayout position="absolute">
+            <div class="h-screen max-h-screen bg-cover bg-no-repeat" style="background-image: url('/assets/svg/bg.svg');">
+                <NLayout position="absolute" class="!bg-transparent">
                     <NLayoutHeader class="p-4 px-[24px]" bordered>
                         <NFlex justify="space-between" align="center">
                             <NImage src="/assets/svg/logo.svg" preview-disabled object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
@@ -112,7 +112,7 @@ const logout = () => {
                             </NSpace>
                         </NFlex>
                     </NLayoutHeader>
-                    <NLayout has-sider position="absolute" style="top: 73px; bottom: 54px">
+                    <NLayout has-sider position="absolute" class="!bg-transparent" style="top: 73px; bottom: 54px">
                         <NLayoutSider collapse-mode="width" :collapsed-width="0" width="240" :collapsed="menuCollapsed"
                                       show-trigger @collapse="menuCollapsed = true"
                                       @expand="menuCollapsed = false"
@@ -126,7 +126,7 @@ const logout = () => {
                                 </NSpace>
                             </NFlex>
                         </NLayoutSider>
-                        <NLayout :native-scrollbar="false" :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="" style="background-image: url('/assets/svg/bg.svg'); background-">
+                        <NLayout :native-scrollbar="false" :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="!bg-transparent">
                             <main>
                                 <NFlex v-if="$slots.header || $slots.headermore" justify="space-between" align="center"
                                        class="mb-5">
