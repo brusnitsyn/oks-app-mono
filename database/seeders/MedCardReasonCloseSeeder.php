@@ -13,14 +13,18 @@ class MedCardReasonCloseSeeder extends Seeder
      */
     public function run(): void
     {
+        if (MedCardReasonClose::count() > 0) MedCardReasonClose::truncate();
         MedCardReasonClose::create([
-            'name' => 'Истечение времени',
+            'name' => 'Личный отказ пациента',
+        ]);
+        MedCardReasonClose::create([
+            'name' => 'Смерть пациента',
+        ]);
+        MedCardReasonClose::create([
+            'name' => 'Прохождении последней контрольной точки (12 месяцев)',
         ]);
         MedCardReasonClose::create([
             'name' => 'Повторное событие',
-        ]);
-        MedCardReasonClose::create([
-            'name' => 'Смерть',
         ]);
     }
 }
