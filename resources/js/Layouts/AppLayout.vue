@@ -88,11 +88,11 @@ const logout = () => {
 
             <Banner/>
 
-            <div class="h-screen max-h-screen bg-cover bg-no-repeat" style="background-image: url('/assets/svg/bg.svg');">
+            <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed" style="background-image: url('/assets/svg/bg.svg');">
                 <NLayout position="absolute" class="!bg-transparent">
                     <NLayoutHeader class="p-4 px-[24px]" bordered>
                         <NFlex justify="space-between" align="center">
-                            <NImage src="/assets/svg/logo.svg" preview-disabled object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
+                            <NImage src="/assets/svg/logo.svg" preview-disabled :height="40" object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
                             <NSpace class="-m-5 -mr-[24px]" :size="0">
                                 <NDropdown trigger="click" placement="top-end" :options="userOptions" @select="(key, option) => option.onClick()">
                                     <NButton quaternary class="h-[73px] rounded-none">
@@ -121,8 +121,8 @@ const logout = () => {
                             <NFlex vertical justify="space-between" class="h-full relative">
                                 <NMenu :options="menuOptions" :value="currentRoute"/>
                                 <NSpace vertical>
-                                    <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" src="/assets/svg/woman.svg" />
-                                    <NImage v-if="heartView" :preview-disabled="true" src="/assets/svg/heart.svg" class="absolute bottom-[15%] px-6" />
+                                    <NImage v-if="characterView" :preview-disabled="true" class="h-[450px] p-8 px-8" width="192" src="/assets/svg/woman.svg" />
+                                    <NImage v-if="heartView" :preview-disabled="true" src="/assets/svg/heart.svg" width="192" class="absolute bottom-[15%] px-6" />
                                 </NSpace>
                             </NFlex>
                         </NLayoutSider>
