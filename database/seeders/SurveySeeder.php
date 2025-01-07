@@ -254,10 +254,10 @@ class SurveySeeder extends Seeder
         ]);
 
         ///
-        /// Медицинские препараты
+        /// Лекарственные препараты
         ///
         $briefQuestionChapter = $survey->surveyChapters()->create([
-            'name' => '8. Медицинские препараты'
+            'name' => '8. Лекарственные препараты'
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
