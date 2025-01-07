@@ -6,8 +6,8 @@ const emits = defineEmits(['click'])
 </script>
 
 <template>
-    <NInputGroup class="bg-white">
-        <NInput v-model:value="value" class="max-w-screen-sm" size="large" placeholder="Найти пациента">
+    <NInputGroup class="bg-white max-w-screen-sm">
+        <NInput v-model:value="value" size="large" placeholder="Найти пациента">
             <template #prefix>
                 <NIcon :component="IconSearch" size="18" />
             </template>
