@@ -6,7 +6,7 @@ import {useForm, usePage} from "@inertiajs/vue3";
 import AppDatePicker from "@/Components/AppDatePicker.vue";
 
 const { updateTitle, updateShow } = inject('modal')
-updateTitle('Снятие с регистра')
+updateTitle('Исключение из регистра')
 const page = usePage()
 const reasonCloses = computed(() => page.props.reasonCloses)
 const formRef = ref()
@@ -55,7 +55,7 @@ function onSuccessClick() {
             if (!errors) {
                 form.delete(route('patients.delete', { 'patient': props.data.id }), {
                     onSuccess: () => {
-                        window.$message.success('Пациент снят с регистра')
+                        window.$message.success('Пациент исключен из регистра')
                         updateShow(false)
                     },
                 })
@@ -71,10 +71,10 @@ function onSuccessClick() {
 <template>
     <NForm :model="form" :rules="rules" ref="formRef">
         <NGrid cols="2" x-gap="6" y-gap="6">
-            <NFormItemGi label="Дата снятия" path="closed_at">
+            <NFormItemGi label="Дата исключения" path="closed_at">
                 <AppDatePicker v-model:value="form.closed_at" />
             </NFormItemGi>
-            <NFormItemGi label="Причина снятия" path="med_card_reason_close_id">
+            <NFormItemGi label="Причина исключения" path="med_card_reason_close_id">
                 <NSelect  placeholder="" :options="reasonCloses" v-model:value="form.med_card_reason_close_id" label-field="name" value-field="id"  />
             </NFormItemGi>
 
@@ -91,7 +91,7 @@ function onSuccessClick() {
                             <template #icon>
                                 <NIcon :component="IconCheck" />
                             </template>
-                            Снять
+                            Исключить
                         </NButton>
                     </NSpace>
                 </NFlex>

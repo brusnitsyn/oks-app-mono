@@ -67,12 +67,12 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                                                 {{ fio }}
                                             </NText>
                                             <NText v-if="hasDeleted">
-                                                Снят по причине: {{ patient.last_medcard.med_card_reason_close.name }}
+                                                Исключен по причине: {{ patient.last_medcard.med_card_reason_close.name }}
                                             </NText>
                                         </NSpace>
 
                                         <NButton v-if="!hasDeleted" type="error" @click="onDeletePatient">
-                                            Снять с регистра
+                                            Исключить из регистра
                                         </NButton>
                                         <NButton v-else type="info" @click="onRestorePatient">
                                             Вернуть в регистр
