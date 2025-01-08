@@ -14,6 +14,7 @@ class Patient extends Model
         'phone',
         'dop_phone',
         'brith_at',
+        'gender_id'
     ];
 
     public function medcards()
@@ -31,5 +32,10 @@ class Patient extends Model
     public function lastMedcard()
     {
         return $this->hasOne(MedCard::class)->withTrashed()->latest();
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class);
     }
 }
