@@ -28,7 +28,7 @@ const props = defineProps({
 const page = usePage()
 
 const propsData = computed(() => props.controlCall)
-
+const formRef = ref()
 const form = useForm({
     med_card_control_call_id: propsData.value.id,
     info:  propsData.value.info,
@@ -36,7 +36,8 @@ const form = useForm({
     survey_result_id:  propsData.value.survey_result_id,
     control_call_result_id:  propsData.value.control_call_result_id,
     survey_id:  propsData.value.survey_id,
-    disp_start_at: null
+    disp_start_at: null,
+    completed_chapters: []
 })
 
 const { updateTitle, updateShow } = inject('modal')
@@ -91,7 +92,7 @@ function hasDisableAnswer(answerId, questionId) {
             if (typeof find != 'undefined') return itm.id === find.survey_chapter_id
         })
         if (typeof chapter !== 'undefined') {
-            const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true)
+            const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true && itm.has_disable_other_answer !== true)
             for (const question of questionsToDisabled) {
                 question.disabled = false
             }
@@ -119,6 +120,7 @@ function hasDisableAnswer(answerId, questionId) {
                     disabledTo = disableAnswer.disable_answer_ids
                     for (const ans of question.answers) {
                         if (disabledTo.length > 0 && disabledTo.includes(ans.id)) {
+                            question.disabled = true
                             ans.disabled = true
                             form.answers[question.id] = null
                         }
@@ -140,9 +142,9 @@ function hasDisableAnswer(answerId, questionId) {
             console.log(lastAnswer.enable_answer_ids)
             if (lastAnswer.enable_answer_ids) {
                 enabledTo = lastAnswer.enable_answer_ids
-
                 for (const ans of question.answers) {
                     if (enabledTo.length > 0 && enabledTo.includes(ans.id)) {
+                        question.disabled = false
                         ans.disabled = false
                     }
                 }
@@ -151,10 +153,16 @@ function hasDisableAnswer(answerId, questionId) {
     }
 }
 
+// Предварительная проверка ответов
 for (const answerId of Object.values(propsData.value.answers)) {
     const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
     shadowSelectedAnswers.value.push(findShadow)
     hasDisableAnswer(findShadow.id)
+}
+
+// Предварительная калькуляция процентов ответов
+for (const surveyChapter of propsData.value.survey.survey_chapters) {
+    calculateAnswerPercent(surveyChapter.id)
 }
 
 function onCheckSurveyAnswer(chapterId, answerId, question) {
@@ -174,10 +182,37 @@ function onCheckSurveyAnswer(chapterId, answerId, question) {
     shadowSelectedAnswers.value.push(findShadow)
 
     hasDisableAnswer(answerId, question.id)
+
+    calculateAnswerPercent(chapterId)
+}
+
+// Процент ответов в главе
+function calculateAnswerPercent(chapterId) {
+    // Вопросы в главе
+    const allQuestionsInChapter = propsData.value.survey.survey_chapters.find(chapter => chapter.id === chapterId)
+        .questions.filter(function (quest) {
+            return (quest.disabled === false || typeof quest.disabled === 'undefined')
+        })
+    // Кол-во ответов
+    let countAnswer = 0
+    for (const questionInChapter of allQuestionsInChapter) {
+        // console.log(questionInChapter)
+        const hasAnswer = form.answers[questionInChapter.id]
+        if (hasAnswer !== null && typeof hasAnswer !== 'undefined') {
+            console.log(hasAnswer)
+            countAnswer++
+        }
+    }
+    // Считаем процент
+    const percent = countAnswer * 100 / allQuestionsInChapter.length
+    // console.log(`${percent}%`)
+    // console.log(countAnswer)
+    console.log(allQuestionsInChapter)
+    form.completed_chapters[chapterId] = percent
 }
 
 watch(shadowSelectedAnswers.value, (newValue) => {
-    console.log(newValue)
+    // console.log(newValue)
     const hasSendSmp = newValue.findIndex(itm => itm.has_send_smp === true)
     if (hasSendSmp !== -1) {
         form.survey_result_id = 6
@@ -210,7 +245,15 @@ const rules = {
             message: messageDefault,
             trigger: ['blur', 'change']
         }
-    ]
+    ],
+    'survey_result_id': [
+        {
+            type: 'number',
+            required: true,
+            message: 'Пока чек-лист пуст - результата не будет',
+            trigger: ['blur', 'change']
+        }
+    ],
 }
 
 const resultCall = computed({
@@ -240,11 +283,18 @@ function onCloseClick() {
 }
 
 function onSuccessClick() {
-    form.put(route('control.call.update', { controlCall: propsData.value.id }), {
-        onSuccess: () => {
-            window.$message.success('Контрольная точка обновлена')
-            router.reload()
-            updateShow(false)
+    formRef.value?.validate((errors) => {
+        if (!errors) {
+            form.put(route('control.call.update', { controlCall: propsData.value.id }), {
+                onSuccess: () => {
+                    window.$message.success('Контрольная точка обновлена')
+                    router.reload()
+                    updateShow(false)
+                }
+            })
+        }
+        else {
+            console.log(errors)
         }
     })
 }
@@ -259,34 +309,45 @@ const hasDisabledSurvey = computed(() => {
 </script>
 
 <template>
-    <NForm :model="form" :rules="rules">
+    <NForm :model="form" :rules="rules" ref="formRef">
         <NGrid cols="2" x-gap="6" y-gap="6">
             <NFormItemGi label="Результат дозвона" path="control_call_result_id">
                 <NSelect placeholder="" :options="callResults" v-model:value="resultCall" label-field="name" value-field="id" />
             </NFormItemGi>
-            <NFormItemGi label="Результат опроса" path="control_call.survey_result_id">
+            <NFormItemGi label="Результат опроса" path="survey_result_id">
                 <NSelect disabled v-model:value="form.survey_result_id" :options="surveyResults" placeholder="" label-field="name" value-field="id" />
             </NFormItemGi>
 
             <NGi span="2">
                 <NCollapse accordion v-model:expanded-names="surveyExpanded">
                     <template v-for="(chapter, index) in propsData.survey.survey_chapters">
-                        <NCollapseItem :title="chapter.name" :name="index" :disabled="hasDisabledSurvey">
-                            <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
-                                <template v-for="(question, index) in chapter.questions">
-                                    <NGridItem>
-                                        <NSpace vertical>
-                                            <NText class="font-medium">
-                                                {{ index + 1 }}. {{ question.question }}
-                                            </NText>
-                                            <NRadioGroup v-model:value="form.answers[question.id]" :disabled="propsData.called_at !== null || question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
+                        <NFormItem :path="`completed_chapters[${chapter.id}]`" :show-label="false" class="gap-y-3 relative" feedback-class="absolute w-auto right-0 top-1" :rule="{
+                                        type: 'number',
+                                        validator(rule, value) {
+                                            if (value !== 100 && form.control_call_result_id === 1) {
+                                                return new Error('Проверьте заполнение')
+                                            }
+                                        },
+                                        trigger: ['input', 'change', 'blur'],
+                                      }">
+                            <NCollapseItem :title="chapter.name" :name="index" :disabled="hasDisabledSurvey">
+                                <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
+                                    <template v-for="(question, index) in chapter.questions">
+                                        <NFormItemGi :show-feedback="false">
+                                            <template #label>
+                                                <NText class="font-medium">
+                                                    {{ index + 1 }}. {{ question.question }}
+                                                </NText>
+                                            </template>
+                                            <NRadioGroup v-model:value="form.answers[question.id]" :disabled=" question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
                                                 <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                                             </NRadioGroup>
-                                        </NSpace>
-                                    </NGridItem>
-                                </template>
-                            </NGrid>
-                        </NCollapseItem>
+                                        </NFormItemGi>
+                                    </template>
+                                </NGrid>
+                            </NCollapseItem>
+                        </NFormItem>
+
                     </template>
                 </NCollapse>
             </NGi>
@@ -325,5 +386,7 @@ const hasDisabledSurvey = computed(() => {
 </template>
 
 <style scoped>
-
+:deep(.n-form-item .n-form-item-feedback-wrapper) {
+    grid-area: inherit;
+}
 </style>
