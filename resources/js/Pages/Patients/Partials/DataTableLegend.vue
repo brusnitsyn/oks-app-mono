@@ -26,7 +26,7 @@ import {NFlex, NSpace} from "naive-ui";
         <NSpace align="center">
             <div class="h-[34px] w-[50px] rounded flex flex-col justify-center items-center border-4 border-black" />
             <span>
-        &ndash; Пациент не берет трубку
+        &ndash; Отказ от предоставления информации
       </span>
         </NSpace>
         <NSpace align="center">
@@ -34,7 +34,7 @@ import {NFlex, NSpace} from "naive-ui";
                 дд.мм
             </div>
             <span>
-        &ndash; Отказ от предоставления информации
+        &ndash; Пациент не берет трубку
       </span>
         </NSpace>
     </NFlex>
