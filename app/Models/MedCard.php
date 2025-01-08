@@ -15,7 +15,7 @@ class MedCard extends Model
         'recipient_at', // Дата поступления в стационар
         'extract_at', // Дата выписки из стационара
         'mkb_id', // Основной диагноз
-        'disp_id', // Дисп наблюдение
+        'disp_id', // Дисп учёт
         'med_drugs_status_id', // Выдача мед препаратов
         'med_drugs_period_id', // Выданы мед препараты на период
         'med_card_reason_close_id', // Причина закрытия

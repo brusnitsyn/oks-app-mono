@@ -291,7 +291,7 @@ const hasDisabledSurvey = computed(() => {
                 </NCollapse>
             </NGi>
 
-            <NFormItemGi v-if="hasShowDispPicker" label="Диспансерное наблюдение" class="mt-4">
+            <NFormItemGi v-if="hasShowDispPicker" label="Диспансерный учёт" class="mt-4">
                 <AppDatePicker v-model:value="form.disp_start_at" />
             </NFormItemGi>
 

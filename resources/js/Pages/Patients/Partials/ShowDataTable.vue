@@ -87,7 +87,7 @@ const defaultColumns = ref([
         key: 'ds',
     },
     {
-        title: 'Диспансерное\nнаблюдение',
+        title: 'Диспансерное\nучёт',
         width: 130,
         align: 'center',
         key: 'disp_status',

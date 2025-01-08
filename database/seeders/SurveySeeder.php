@@ -367,14 +367,14 @@ class SurveySeeder extends Seeder
         ]);
 
         ///
-        /// Диспансерное наблюдение
+        /// Диспансерный учёт
         ///
         $briefQuestionChapter = $survey->surveyChapters()->create([
-            'name' => '10. Диспансерное наблюдение'
+            'name' => '10. Диспансерный учёт'
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
-            'question' => 'Взят пациент на диспансерное наблюдение?',
+            'question' => 'Пациент взят на диспансерный учёт?',
             'survey_id' => $survey->id
         ]);
 
