@@ -248,6 +248,14 @@ function onSuccessClick() {
         }
     })
 }
+const surveyExpanded = ref([])
+const hasDisabledSurvey = computed(() => {
+    if (form.control_call_result_id === null || form.control_call_result_id !== 1) {
+        surveyExpanded.value = []
+        return true
+    }
+    return false
+})
 </script>
 
 <template>
@@ -261,9 +269,9 @@ function onSuccessClick() {
             </NFormItemGi>
 
             <NGi span="2">
-                <NCollapse accordion>
+                <NCollapse accordion v-model:expanded-names="surveyExpanded">
                     <template v-for="(chapter, index) in propsData.survey.survey_chapters">
-                        <NCollapseItem :title="chapter.name" :name="index" :disabled="form.control_call_result_id === null">
+                        <NCollapseItem :title="chapter.name" :name="index" :disabled="hasDisabledSurvey">
                             <NGrid cols="1" x-gap="8" y-gap="8" class="px-6">
                                 <template v-for="(question, index) in chapter.questions">
                                     <NGridItem>
@@ -307,7 +315,7 @@ function onSuccessClick() {
                             <template #icon>
                                 <NIcon :component="IconCheck" />
                             </template>
-                            Обновить
+                            Завершить опрос
                         </NButton>
                     </NSpace>
                 </NFlex>
