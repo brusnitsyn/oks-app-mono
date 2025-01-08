@@ -101,6 +101,7 @@ class PatientController extends Controller
             // Для добавления пациента
             'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
             'medDrugsPeriods' => fn () => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
+            'genders' => fn () => \App\Models\Gender::all()->except(['id', 'name']),
             'mkbs' => fn () => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
             'complications' => fn () => \App\Models\Complication::all()->except(['id', 'name']),
             'lpus' => fn () => \App\Models\Lpu::all()->except(['id', 'name']),
@@ -119,6 +120,7 @@ class PatientController extends Controller
             'patient.phone' => ['required', 'string'],
             'patient.dop_phone' => ['nullable', 'string'],
             'patient.brith_at' => ['required', 'numeric'],
+            'patient.gender_id' => ['required', 'numeric'],
 
             'medcard' => ['required', 'array'],
             'medcard.lpu_id' => ['required', 'numeric'],
@@ -167,6 +169,7 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         $patient = $patient->with([
+            'gender',
             'lastMedcard.mkb',
             'lastMedcard.complications',
             'lastMedcard.complication_ids',
@@ -198,6 +201,7 @@ class PatientController extends Controller
 
             // Для редактирования пациента и кт
             'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
+            'genders' => fn () => \App\Models\Gender::all()->except(['id', 'name']),
             'medDrugsPeriods' => fn () => \App\Models\MedDrugsPeriod::all()->except(['id', 'name']),
             'mkbs' => fn () => \App\Models\Mkb::all()->except(['id', 'ds', 'name']),
             'complications' => fn () => \App\Models\Complication::all()->except(['id', 'name']),
@@ -222,6 +226,7 @@ class PatientController extends Controller
             'patient.phone' => ['required', 'string'],
             'patient.dop_phone' => ['nullable', 'string'],
             'patient.brith_at' => ['required', 'numeric'],
+            'patient.gender_id' => ['required', 'numeric'],
 
             'medcard' => ['required', 'array'],
             'medcard.id' => ['required', 'numeric'],

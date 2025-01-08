@@ -115,6 +115,17 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                                     </NListItem>
                                     <NListItem>
                                         <NGrid :cols="2">
+                                            <NGi><NText>Пол</NText></NGi>
+                                            <NGi>
+                                                <NText v-if="patient.gender">{{ patient.gender.name }}</NText>
+                                                <NText v-else>
+                                                    —
+                                                </NText>
+                                            </NGi>
+                                        </NGrid>
+                                    </NListItem>
+                                    <NListItem>
+                                        <NGrid :cols="2">
                                             <NGi><NText>Номер телефона</NText></NGi>
                                             <NGi>
                                                 <NText v-if="patient.phone">{{ patient.phone }}</NText>

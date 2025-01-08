@@ -28,6 +28,7 @@ const lpus = ref(page.props.lpus)
 const mkbs = ref(page.props.mkbs)
 const medDrugsStatuses = ref(page.props.medDrugsStatuses)
 const medDrugsPeriods = ref(page.props.medDrugsPeriods)
+const genders = ref(page.props.genders)
 const complications = ref(page.props.complications)
 const additionalTreatment = ref(page.props.additionalTreatment)
 
@@ -166,6 +167,14 @@ const rules = {
             trigger: ['blur', 'input']
         }
     ],
+    'patient.gender_id': [
+        {
+            type: 'number',
+            required: true,
+            message: messageDefault,
+            trigger: ['blur', 'change']
+        }
+    ],
 
 
     'medcard.lpu_id': [
@@ -278,6 +287,9 @@ updateTab(0)
                     </NFormItemGi>
                     <NFormItemGi span="2" label="Дополнительный номер телефона" path="patient.dop_phone">
                         <InputPhone v-model:value="form.patient.dop_phone" />
+                    </NFormItemGi>
+                    <NFormItemGi label="Пол" path="patient.gender_id">
+                        <NSelect v-model:value="form.patient.gender_id" :options="genders" value-field="id" label-field="name" placeholder="" />
                     </NFormItemGi>
                 </NGrid>
         </NTabPane>
