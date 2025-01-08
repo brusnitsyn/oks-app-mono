@@ -302,7 +302,7 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                                                                 &middot; {{ format(controlCall.call_at, 'dd.MM.yyyy') }}
                                                             </NText>
                                                         </NSpace>
-                                                        <NText>
+                                                        <NText v-if="controlCall.called_at">
                                                             Дата звонка: {{ format(controlCall.called_at, 'dd.MM.yyyy') }}
                                                         </NText>
                                                     </NSpace>
