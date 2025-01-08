@@ -293,12 +293,19 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                                         <NListItem v-for="controlCall in patient.last_medcard.control_call" :key="controlCall.id" class="rounded min-h-[54px]" :style="`backgroundColor: ${controlCall.called_at != null ? '#7FE7C4' : ''}`">
                                             <NGrid cols="2" class="px-4">
                                                 <NGridItem class="flex items-center gap-x-1">
-                                                    <NText class="font-bold">
-                                                        {{ controlCall.name }}
-                                                    </NText>
-                                                    <NText>
-                                                        &middot; {{ format(controlCall.call_at, 'dd.MM.yyyy') }}
-                                                    </NText>
+                                                    <NSpace vertical :size="0">
+                                                        <NSpace :size="4">
+                                                            <NText class="font-bold">
+                                                                {{ controlCall.name }}
+                                                            </NText>
+                                                            <NText>
+                                                                &middot; {{ format(controlCall.call_at, 'dd.MM.yyyy') }}
+                                                            </NText>
+                                                        </NSpace>
+                                                        <NText>
+                                                            Дата звонка: {{ format(controlCall.called_at, 'dd.MM.yyyy') }}
+                                                        </NText>
+                                                    </NSpace>
                                                 </NGridItem>
                                                 <NGridItem class="flex items-center justify-end" align="end">
                                                     <EditControlCallButton v-if="!hasDeleted" :control-call="controlCall" />

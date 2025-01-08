@@ -39,7 +39,7 @@ class MedCardControlCallController extends Controller
             'control_call_result_id'
         ]);
 
-        $control['called_at'] = Carbon::now(config('app.timezone'))->getTimestampMs();
+        if ($controlCall->called_at === null) $control['called_at'] = Carbon::now(config('app.timezone'))->getTimestampMs();
 
         $controlCall->update($control);
 
