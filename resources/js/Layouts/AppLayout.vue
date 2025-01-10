@@ -15,10 +15,11 @@ import {
     NIcon,
     NImage, NAvatar, NText
 } from 'naive-ui'
-import {IconDoorExit, IconSettings2, IconUserHexagon, IconUsers} from '@tabler/icons-vue'
+import {IconDoorExit, IconMenu3, IconSettings2, IconUserHexagon, IconUsers} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
 import {useStorage} from "@vueuse/core";
+import {isLargeScreen, isMediumScreen, isSmallScreen} from "@/Utils/mediaQuery.js";
 
 defineProps({
     title: String,
@@ -35,6 +36,7 @@ const showingNavigationDropdown = ref(false);
 // };
 
 const menuCollapsed = useStorage('side-collapsed', false)
+const mobileMenuCollapsed = ref(false)
 
 function renderIcon(icon) {
     return () => h(NIcon, null, {default: () => h(icon)})
@@ -76,6 +78,19 @@ const page = usePage()
 
 const user = ref(page.props.auth.user)
 
+const headerClass = computed(() => {
+    console.log(isSmallScreen)
+    if (isLargeScreen.value) {
+        return '!mb-0'
+    }
+    if (isMediumScreen.value) {
+        return '!mb-0 text-3xl'
+    }
+    if (isSmallScreen.value) {
+        return '!mb-0 text-2xl'
+    }
+})
+
 const logout = () => {
     router.post(route('logout'));
 };
@@ -90,11 +105,13 @@ const logout = () => {
 
             <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed" style="background-image: url('/assets/svg/bg.svg');">
                 <NLayout position="absolute" class="!bg-transparent">
-                    <NLayoutHeader class="p-4 px-[24px]" bordered>
+                    <NLayoutHeader class="p-4 px-4 pr-[24px] lg:px-[24px]" bordered>
                         <NFlex justify="space-between" align="center">
-                            <NImage src="/assets/svg/logo.svg" preview-disabled :height="40" object-fit="cover" :img-props="{class: 'w-full h-full max-h-[40px]' }" class="" />
+                            <Link href="/" class="flex">
+                                <NImage src="/assets/svg/logo.svg" preview-disabled :width="isLargeScreen ? '176.5' : '130'" />
+                            </Link>
                             <NSpace class="-m-5 -mr-[24px]" :size="0">
-                                <NDropdown trigger="click" placement="top-end" :options="userOptions" @select="(key, option) => option.onClick()">
+                                <NDropdown v-if="user && isLargeScreen" trigger="click" placement="top-end" :options="userOptions" @select="(key, option) => option.onClick()">
                                     <NButton quaternary class="h-[73px] rounded-none">
                                         <NSpace align="center">
                                             <NSpace vertical align="end" :size="2">
@@ -109,11 +126,14 @@ const logout = () => {
                                         </NSpace>
                                     </NButton>
                                 </NDropdown>
+                                <NButton v-if="!isLargeScreen" quaternary class="h-[61px] w-[61px] rounded-none" @click="mobileMenuCollapsed = true">
+                                    <NIcon :component="IconMenu3" />
+                                </NButton>
                             </NSpace>
                         </NFlex>
                     </NLayoutHeader>
                     <NLayout has-sider position="absolute" class="!bg-transparent" style="top: 73px; bottom: 54px">
-                        <NLayoutSider collapse-mode="width" :collapsed-width="0" width="240" :collapsed="menuCollapsed"
+                        <NLayoutSider v-if="isLargeScreen" collapse-mode="width" :collapsed-width="0" width="240" :collapsed="menuCollapsed"
                                       show-trigger @collapse="menuCollapsed = true"
                                       @expand="menuCollapsed = false"
                                       :collapsed-trigger-class="menuCollapsed === true ? '!-right-5 !top-1/4' : ''"
@@ -126,11 +146,11 @@ const logout = () => {
                                 </NSpace>
                             </NFlex>
                         </NLayoutSider>
-                        <NLayout :native-scrollbar="false" :content-class="menuCollapsed ? 'p-7 pl-14' : 'p-7'" class="!bg-transparent">
+                        <NLayout :native-scrollbar="false" :content-class="(menuCollapsed && isLargeScreen) ? 'p-7 pl-14' : 'p-4 lg:p-7'" class="!bg-transparent">
                             <main>
                                 <NFlex v-if="$slots.header || $slots.headermore" justify="space-between" align="center"
                                        class="mb-5">
-                                    <NH1 v-if="$slots.header" class="!mb-0">
+                                    <NH1 v-if="$slots.header" :class="headerClass">
                                         <slot name="header"/>
                                     </NH1>
                                     <NSpace>
@@ -155,6 +175,24 @@ const logout = () => {
                     </NLayoutFooter>
                 </NLayout>
             </div>
+
+            <NDrawer v-model:show="mobileMenuCollapsed" :placement="isMediumScreen ? 'left' : 'top'" width="280">
+                <NDrawerContent header-class="!font-normal !text-base !leading-[1] !px-4 !pr-[24px]" body-content-class="!px-0 !py-0" class="">
+                    <template #header>
+                        <NFlex justify="space-between" align="center">
+                            <Link href="/" class="flex">
+                                <NImage src="/assets/svg/logo.svg" preview-disabled :width="isLargeScreen ? '176.5' : '130'" />
+                            </Link>
+                            <NSpace v-if="!isMediumScreen" class="-m-5 -mr-[24px]" :size="0">
+                                <NButton quaternary class="h-[61px] w-[61px] rounded-none" @click="mobileMenuCollapsed = false">
+                                    <NIcon :component="IconMenu3" />
+                                </NButton>
+                            </NSpace>
+                        </NFlex>
+                    </template>
+                    <NMenu :options="menuOptions" :value="currentRoute" />
+                </NDrawerContent>
+            </NDrawer>
         </div>
     </NaiveProvider>
 </template>
