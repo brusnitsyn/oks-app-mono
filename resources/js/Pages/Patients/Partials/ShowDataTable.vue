@@ -45,12 +45,21 @@ const defaultColumns = ref([
         align: 'center'
     },
     {
-        title: 'Дата поступления',
-        key: 'recipient_at',
+        title: 'Дата выписки',
+        key: 'extract_at',
         width: 110,
         sorter: 'default',
         sortOrder: false,
         align: 'center',
+        render(row) {
+            return h(
+                'div',
+                {},
+                {
+                    default: () => format(row.extract_at, 'dd.MM.yyyy')
+                }
+            )
+        }
     },
     {
         title: 'ФИО',
@@ -79,6 +88,15 @@ const defaultColumns = ref([
         sorter: 'default',
         sortOrder: false,
         align: 'center',
+        render(row) {
+            return h(
+                'div',
+                {},
+                {
+                    default: () => format(row.brith_at, 'dd.MM.yyyy')
+                }
+            )
+        }
     },
     {
         title: 'Диагноз',
