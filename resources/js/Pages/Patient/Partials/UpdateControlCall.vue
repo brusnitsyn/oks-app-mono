@@ -68,7 +68,7 @@ function hasDisableAnswer(answerId, questionId) {
         for (const disableOtherAnswer of disableOtherAnswers) {
             const chapter = props.controlCall.survey.survey_chapters.find(itm => {
                 const find = itm.questions.find(q => q.id === lastAnswer.survey_chapter_question_id)
-                if (typeof find != 'undefined') return itm.id === find.survey_chapter_id
+                if (typeof find !== 'undefined') return itm.id === find.survey_chapter_id
             })
             const questionsToDisable = chapter.questions.filter(itm => !(itm.id === disableOtherAnswer.survey_chapter_question_id))
 
@@ -89,7 +89,7 @@ function hasDisableAnswer(answerId, questionId) {
     else {
         const chapter = props.controlCall.survey.survey_chapters.find(itm => {
             const find = itm.questions.find(q => q.id === lastAnswer.survey_chapter_question_id)
-            if (typeof find != 'undefined') return itm.id === find.survey_chapter_id
+            if (typeof find !== 'undefined') return itm.id === find.survey_chapter_id
         })
         if (typeof chapter !== 'undefined') {
             const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true && itm.has_disable_other_answer !== true)
@@ -105,7 +105,7 @@ function hasDisableAnswer(answerId, questionId) {
         for (const disableAnswer of disableAnswers) {
             const chapter = props.controlCall.survey.survey_chapters.find(itm => {
                 const find = itm.questions.find(q => q.id === lastAnswer.survey_chapter_question_id)
-                if (typeof find != 'undefined') return itm.id === find.survey_chapter_id
+                if (typeof find !== 'undefined') return itm.id === find.survey_chapter_id
             })
             const questionsToDisable = chapter.questions.filter(itm => !(itm.id === disableAnswer.survey_question_chapter_id))
 
