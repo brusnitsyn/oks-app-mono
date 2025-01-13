@@ -81,7 +81,7 @@ function hasDisableAnswer(answerId, questionId) {
                 }
                 if (disableOtherAnswer.has_disable_other_answer) {
                     question.disabled = true
-                    form.answers[question.id] = null
+                    form.answers.delete(`${question.id}`)
                 }
             }
         }
@@ -122,7 +122,8 @@ function hasDisableAnswer(answerId, questionId) {
                         if (disabledTo.length > 0 && disabledTo.includes(ans.id)) {
                             question.disabled = true
                             ans.disabled = true
-                            form.answers[question.id] = null
+                            form.answers.delete(`${question.id}`)
+                            // form.answers[question.id] = null
                         }
                     }
                 }
@@ -199,7 +200,7 @@ function calculateAnswerPercent(chapterId) {
     let countAnswer = 0
     for (const questionInChapter of allQuestionsInChapter) {
         // console.log(questionInChapter)
-        const hasAnswer = form.answers[questionInChapter.id]
+        const hasAnswer = form.answers.get(`${questionInChapter.id}`)
         if (hasAnswer !== null && typeof hasAnswer !== 'undefined') {
             console.log(hasAnswer)
             countAnswer++
