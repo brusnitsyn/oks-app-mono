@@ -296,10 +296,15 @@ function onSuccessClick() {
                     window.$message.success('Контрольная точка обновлена')
                     router.reload()
                     updateShow(false)
+                },
+                onError: (error) => {
+                    window.$message.error('Ошибка при обновлении контрольной точки')
+                    console.log(error)
                 }
             })
         }
         else {
+            window.$message.error('Проверьте заполнение чек-листа')
             console.log(errors)
         }
     })
