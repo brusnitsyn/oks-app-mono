@@ -45,8 +45,7 @@ class SurveySeeder extends Seeder
         ]);
         $surveyQuestion->answers()->create([
             'answer' => 'Плохо',
-            'has_send_smp' => true,
-            'has_send_doctor' => true
+            'has_attention' => true,
         ]);
 
         ///
@@ -67,7 +66,7 @@ class SurveySeeder extends Seeder
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Да',
-            'has_attention' => true
+            'has_send_smp' => true
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
@@ -77,7 +76,7 @@ class SurveySeeder extends Seeder
 
         $briefQuestion->answers()->create([
             'answer' => 'При быстрой ходьбе, подъеме в гору',
-            'has_send_doctor' => true
+            'has_send_smp' => true
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'В покое, положении лежа, сидя'
@@ -90,7 +89,7 @@ class SurveySeeder extends Seeder
 
         $briefQuestion->answers()->create([
             'answer' => 'До 15 минут',
-            'has_send_doctor' => true
+            'has_send_smp' => true
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Несколько секунд, более 30 минут, часами'
@@ -103,14 +102,27 @@ class SurveySeeder extends Seeder
 
         $briefQuestion->answers()->create([
             'answer' => 'Останавливаюсь или принимаю нитроглицерин',
-            'has_send_doctor' => true
+            'has_send_smp' => true
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Продолжаю идти в обычном темпе'
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
-            'question' => 'За последние дни боли стали чаще, интенсивнее? По интенсивности похожи как во время инфаркта миокарда?',
+            'question' => 'За последние дни боли стали чаще, интенсивнее?',
+            'survey_id' => $survey->id
+        ]);
+
+        $briefQuestion->answers()->create([
+            'answer' => 'Да',
+            'has_send_smp' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => 'Нет'
+        ]);
+
+        $briefQuestion = $briefQuestionChapter->questions()->create([
+            'question' => 'По интенсивности похожи как во время инфаркта миокарда?',
             'survey_id' => $survey->id
         ]);
 
@@ -178,7 +190,7 @@ class SurveySeeder extends Seeder
 
         $briefQuestion->answers()->create([
             'answer' => 'Да',
-            'has_need_consult_doctor' => true
+            'has_attention' => true
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Нет',
@@ -192,24 +204,45 @@ class SurveySeeder extends Seeder
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
-            'question' => 'Контроль АД',
+            'question' => 'Контроль АД (Систолическое)',
             'survey_id' => $survey->id
         ]);
 
         $briefQuestion->answers()->create([
-            'answer' => '<90 мм рт. ст.',
+            'answer' => '110-139 мм. рт. ст.',
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '91-109 мм. рт. ст.',
+            'has_attention' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '140-179 мм. рт. ст.',
+            'has_attention' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '<90 мм. рт. ст.',
             'has_send_smp' => true
         ]);
         $briefQuestion->answers()->create([
-            'answer' => '100/70 мм рт. ст.',
-            'has_need_consult_doctor' => true
-        ]);
-        $briefQuestion->answers()->create([
-            'answer' => '110-140/80 мм рт. ст.',
-        ]);
-        $briefQuestion->answers()->create([
-            'answer' => '>180/100 мм рт. ст.',
+            'answer' => '>180 мм. рт. ст.',
             'has_send_smp' => true
+        ]);
+
+        $briefQuestion = $briefQuestionChapter->questions()->create([
+            'question' => 'Контроль АД (Диастолическое)',
+            'survey_id' => $survey->id
+        ]);
+
+        $briefQuestion->answers()->create([
+            'answer' => '60-89 мм. рт. ст.',
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '<59 мм. рт. ст.',
+            'has_attention' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '>90 мм. рт. ст.',
+            'has_attention' => true
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
@@ -218,23 +251,23 @@ class SurveySeeder extends Seeder
         ]);
 
         $briefQuestion->answers()->create([
-            'answer' => '<40 ударов в минуту',
-            'has_send_smp' => true
+            'answer' => '55-79 ударов в минуту',
         ]);
         $briefQuestion->answers()->create([
-            'answer' => '45-55 ударов в минуту',
-            'has_need_consult_doctor' => true
-        ]);
-        $briefQuestion->answers()->create([
-            'answer' => '55-70 ударов в минуту',
+            'answer' => '41-54 ударов в минуту',
+            'has_attention' => true
         ]);
         $briefQuestion->answers()->create([
             'answer' => '>80 ударов в минуту',
-            'has_need_consult_doctor' => true
+            'has_attention' => true
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => '<40 ударов в минуту',
+            'has_send_smp' => true
         ]);
 
         ///
-        /// Выписка
+        /// Посещение врача
         ///
         $briefQuestionChapter = $survey->surveyChapters()->create([
             'name' => '7. Посещение врача'
@@ -250,7 +283,7 @@ class SurveySeeder extends Seeder
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Нет',
-            'has_send_doctor' => true
+            'has_attention' => true
         ]);
 
         ///
@@ -269,16 +302,15 @@ class SurveySeeder extends Seeder
             'answer' => 'Выдали в стационаре при выписке',
         ]);
         $briefQuestion->answers()->create([
-            'answer' => 'Выписали рецепты в поликлинике',
+            'answer' => 'Выдали в поликлинике по месту жительства (прикрепления)',
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Нет',
-            'has_need_consult_doctor' => true,
-//            'has_disable_other_answer' => true,
+            'has_attention' => true,
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
-            'question' => 'Вы принимаете в настоящее время препараты, препятствующие тромбозу стентов? (Ацетилсалициловая кислота, Клопидогрел, Тикагрелор (Брилинта)',
+            'question' => 'Вы принимаете препараты для профилактики повторных ишемических событий? (Ацетилсалициловая кислота, Клопидогрел, Тикагрелор (Брилинта)',
             'survey_id' => $survey->id
         ]);
 
@@ -300,6 +332,19 @@ class SurveySeeder extends Seeder
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Нет',
+            'has_attention' => true
+        ]);
+
+        $briefQuestion = $briefQuestionChapter->questions()->create([
+            'question' => 'Какой у Вас запас препаратов по льготным рецептам?',
+            'survey_id' => $survey->id
+        ]);
+
+        $briefQuestion->answers()->create([
+            'answer' => 'Более 14 дней',
+        ]);
+        $briefQuestion->answers()->create([
+            'answer' => 'Менее 14 дней',
             'has_attention' => true
         ]);
 
@@ -330,11 +375,10 @@ class SurveySeeder extends Seeder
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Самостоятельно',
-            'has_attention' => true
         ]);
 
         $briefQuestion = $briefQuestionChapter->questions()->create([
-            'question' => 'Как давно Вы отменили эти  препараты?',
+            'question' => 'Как давно Вы отменили эти препараты?',
             'survey_id' => $survey->id
         ]);
 
@@ -384,6 +428,7 @@ class SurveySeeder extends Seeder
         ]);
         $briefQuestion->answers()->create([
             'answer' => 'Не взят на диспансерный учет',
+            'has_attention' => true,
             'has_show_disp_date_picker' => false
         ]);
     }
