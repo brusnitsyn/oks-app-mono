@@ -60,7 +60,7 @@ const hasShowDisp = computed({
 function hasDisableAnswer(answerId, questionId) {
     const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
     const containDisableAnswers = shadowSelectedAnswers.value.filter(itm => itm.id === lastAnswer.id)
-    const containDisableQuestionIndex = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true)
+    const containDisableQuestionIndex = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true && itm.has_disable_answers !== true)
     const containDisableAnswersIndex = containDisableAnswers.findIndex(itm => itm.has_disable_answers === true)
 
     if (containDisableQuestionIndex !== -1) {
@@ -93,7 +93,9 @@ function hasDisableAnswer(answerId, questionId) {
         })
         if (typeof chapter !== 'undefined') {
             const questionsToDisabled = chapter.questions.filter(itm => itm.disabled === true && itm.has_disable_other_answer !== true)
+
             for (const question of questionsToDisabled) {
+                console.log(`questionsToDisabled:`, question)
                 question.disabled = false
             }
         }
@@ -194,7 +196,8 @@ function calculateAnswerPercent(chapterId) {
     // Вопросы в главе
     const allQuestionsInChapter = propsData.value.survey.survey_chapters.find(chapter => chapter.id === chapterId)
         .questions.filter(function (quest) {
-            return (quest.disabled === false || typeof quest.disabled === 'undefined')
+            const hasContainDisableAnswers = quest.answers.find(item => item.disabled === true)
+            return (typeof hasContainDisableAnswers === 'undefined' && quest.disabled === false || typeof quest.disabled === 'undefined')
         })
     // Кол-во ответов
     let countAnswer = 0
