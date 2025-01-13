@@ -32,7 +32,7 @@ const formRef = ref()
 const form = useForm({
     med_card_control_call_id: propsData.value.id,
     info:  propsData.value.info,
-    answers:  propsData.value.answers,
+    answers: new Map(Object.entries(propsData.value.answers)),
     survey_result_id:  propsData.value.survey_result_id,
     control_call_result_id:  propsData.value.control_call_result_id,
     survey_id:  propsData.value.survey_id,
@@ -166,6 +166,8 @@ for (const surveyChapter of propsData.value.survey.survey_chapters) {
 }
 
 function onCheckSurveyAnswer(chapterId, answerId, question) {
+    form.answers.set(`${question.id}`, answerId)
+
     const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
     const duplicationIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_chapter_question_id === question.id)
 
@@ -306,6 +308,10 @@ const hasDisabledSurvey = computed(() => {
     }
     return false
 })
+
+function getAnswerValue(questionId) {
+    return form.answers.get(`${questionId}`)
+}
 </script>
 
 <template>
@@ -339,7 +345,7 @@ const hasDisabledSurvey = computed(() => {
                                                     {{ index + 1 }}. {{ question.question }}
                                                 </NText>
                                             </template>
-                                            <NRadioGroup v-model:value="form.answers[question.id]" :disabled=" question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
+                                            <NRadioGroup :value="getAnswerValue(question.id)" :disabled=" question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
                                                 <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                                             </NRadioGroup>
                                         </NFormItemGi>
