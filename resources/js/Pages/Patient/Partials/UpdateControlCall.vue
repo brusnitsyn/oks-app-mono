@@ -288,7 +288,10 @@ function onCloseClick() {
 function onSuccessClick() {
     formRef.value?.validate((errors) => {
         if (!errors) {
-            form.put(route('control.call.update', { controlCall: propsData.value.id }), {
+            form.transform((data) => ({
+                ...data,
+                answers: Object.fromEntries(data.answers)
+            })).put(route('control.call.update', { controlCall: propsData.value.id }), {
                 onSuccess: () => {
                     window.$message.success('Контрольная точка обновлена')
                     router.reload()
