@@ -60,7 +60,7 @@ const hasShowDisp = computed({
 function hasDisableAnswer(answerId, questionId) {
     const lastAnswer = shadowSelectedAnswers.value.find(itm => itm.id === answerId)
     const containDisableAnswers = shadowSelectedAnswers.value.filter(itm => itm.id === lastAnswer.id)
-    const containDisableQuestionIndex = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true && itm.has_disable_answers !== true)
+    const containDisableQuestionIndex = containDisableAnswers.findIndex(itm => itm.has_disable_other_answer === true)
     const containDisableAnswersIndex = containDisableAnswers.findIndex(itm => itm.has_disable_answers === true)
 
     if (containDisableQuestionIndex !== -1) {
@@ -75,13 +75,13 @@ function hasDisableAnswer(answerId, questionId) {
             console.log(questionsToDisable)
 
             for (const question of questionsToDisable) {
-                const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_chapter_question_id === question.id - 1)
+                const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_chapter_question_id === question.id)
                 if (spliceIndex !== -1) {
                     shadowSelectedAnswers.value.splice(spliceIndex, 1)
                 }
                 if (disableOtherAnswer.has_disable_other_answer) {
                     question.disabled = true
-                    form.answers.delete(`${question.id}`)
+                    form.answers.set(`${question.id}`, null)
                 }
             }
         }
@@ -114,7 +114,7 @@ function hasDisableAnswer(answerId, questionId) {
             let disabledTo = []
 
             for (const question of questionsToDisable) {
-                const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_question_chapter_id === question.id - 1)
+                const spliceIndex = shadowSelectedAnswers.value.findIndex(itm => itm.survey_question_chapter_id === question.id)
                 if (spliceIndex !== -1) {
                     shadowSelectedAnswers.value.splice(spliceIndex, 1)
                 }
@@ -124,8 +124,7 @@ function hasDisableAnswer(answerId, questionId) {
                         if (disabledTo.length > 0 && disabledTo.includes(ans.id)) {
                             question.disabled = true
                             ans.disabled = true
-                            form.answers.delete(`${question.id}`)
-                            // form.answers[question.id] = null
+                            form.answers.set(`${question.id}`, null)
                         }
                     }
                 }
@@ -217,8 +216,10 @@ function calculateAnswerPercent(chapterId) {
     form.completed_chapters[chapterId] = percent
 }
 
-watch(shadowSelectedAnswers.value, (newValue) => {
-    // console.log(newValue)
+watch(shadowSelectedAnswers.value, (newValue, oldValue) => {
+    console.log('newValue', newValue)
+    console.log('oldValue', oldValue)
+    console.log('shadowSelectedAnswers', shadowSelectedAnswers.value)
     const hasSendSmp = newValue.findIndex(itm => itm.has_send_smp === true)
     if (hasSendSmp !== -1) {
         form.survey_result_id = 6
