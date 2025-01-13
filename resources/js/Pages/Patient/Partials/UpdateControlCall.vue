@@ -372,7 +372,7 @@ function getAnswerValue(questionId) {
             </NFormItemGi>
 
             <NFormItemGi span="2" label="Комментарий" :class="hasShowDispPicker ? 'mt-0' : 'mt-4'">
-                <NInput type="textarea" placeholder="" :autosize="{
+                <NInput v-model:value="form.info" type="textarea" placeholder="" :autosize="{
                     minRows: 3,
                     maxRows: 3,
                 }" />
