@@ -354,7 +354,7 @@ function getAnswerValue(questionId) {
                                                     {{ index + 1 }}. {{ question.question }}
                                                 </NText>
                                             </template>
-                                            <NRadioGroup :value="getAnswerValue(question.id)" :disabled=" question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
+                                            <NRadioGroup :value="getAnswerValue(question.id)" :disabled="controlCall.called_at || question.disabled" :name="question.question" @update:value="answerId => onCheckSurveyAnswer(chapter.id, answerId, question)">
                                                 <NRadio v-for="answer in question.answers" :label="answer.answer" :disabled="answer.disabled" :value="answer.id" />
                                             </NRadioGroup>
                                         </NFormItemGi>
