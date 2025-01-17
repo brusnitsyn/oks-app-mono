@@ -6,7 +6,7 @@ import {
     NCollapseItem, NFlex, NForm,
     NFormItemGi, NGi,
     NGrid,
-    NGridItem, NIcon, NInput,
+    NIcon, NInput,
     NRadio,
     NRadioGroup,
     NSelect,
@@ -294,7 +294,7 @@ function onSuccessClick() {
         if (!errors) {
             form.transform((data) => ({
                 ...data,
-                answers: Object.fromEntries(data.answers)
+                answers: data.answers.size ? Object.fromEntries(data.answers) : null
             })).put(route('control.call.update', { controlCall: propsData.value.id }), {
                 onSuccess: () => {
                     window.$message.success('Контрольная точка обновлена')
