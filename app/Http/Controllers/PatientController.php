@@ -122,6 +122,9 @@ class PatientController extends Controller
             'patient.brith_at' => ['required', 'numeric'],
             'patient.gender_id' => ['required', 'numeric'],
 
+            'patient.fias_objectid' => ['nullable', 'numeric'],
+            'patient.address' => ['required', 'string'],
+
             'medcard' => ['required', 'array'],
             'medcard.lpu_id' => ['required', 'numeric'],
             'medcard.recipient_at' => ['required', 'numeric'],
@@ -227,6 +230,9 @@ class PatientController extends Controller
             'patient.dop_phone' => ['nullable', 'string'],
             'patient.brith_at' => ['required', 'numeric'],
             'patient.gender_id' => ['required', 'numeric'],
+
+            'patient.fias_objectid' => ['nullable', 'numeric'],
+            'patient.address' => ['required', 'string'],
 
             'medcard' => ['required', 'array'],
             'medcard.id' => ['required', 'numeric'],
