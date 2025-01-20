@@ -14,7 +14,10 @@ class Patient extends Model
         'phone',
         'dop_phone',
         'brith_at',
-        'gender_id'
+        'gender_id',
+
+        'fias_objectid',
+        'address'
     ];
 
     public function medcards()
