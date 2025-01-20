@@ -20,6 +20,7 @@ import {IconCheck, IconArrowRight, IconArrowLeft, IconCancel} from "@tabler/icon
 import InputPhone from "@/Components/Inputs/InputPhone.vue";
 import AppDatePicker from "@/Components/AppDatePicker.vue";
 import {useForm, usePage} from "@inertiajs/vue3";
+import InputSearchAddress from "@/Components/Inputs/InputSearchAddress.vue";
 
 const { updateTitle, updateShow } = inject('modal')
 const page = usePage()
@@ -102,7 +103,10 @@ const form = useForm({
         phone: '',
         dop_phone: '',
         brith_at : null,
-        gender_id: null
+        gender_id: null,
+
+        fias_objectid: null,
+        address: ''
     },
     medcard: {
         lpu_id: null,
@@ -189,6 +193,13 @@ const rules = {
     'patient.gender_id': [
         {
             type: 'number',
+            required: true,
+            message: messageDefault,
+            trigger: ['blur', 'change']
+        }
+    ],
+    'patient.address': [
+        {
             required: true,
             message: messageDefault,
             trigger: ['blur', 'change']
@@ -309,6 +320,9 @@ updateTab(0)
                 </NFormItemGi>
                 <NFormItemGi label="Пол" path="patient.gender_id">
                     <NSelect v-model:value="form.patient.gender_id" :options="genders" value-field="id" label-field="name" placeholder="" />
+                </NFormItemGi>
+                <NFormItemGi span="2" label="Адрес проживания" path="patient.address">
+                    <InputSearchAddress v-model:value="form.patient.address" v-model:objectid="form.patient.fias_objectid" />
                 </NFormItemGi>
             </NGrid>
         </NTabPane>
