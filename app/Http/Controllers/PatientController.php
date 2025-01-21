@@ -34,7 +34,9 @@ class PatientController extends Controller
             }
         }
 
-        $patients = $patients->get();
+        $patients = $patients
+            ->orderBy('id')
+            ->get();
 
         $registryPatient = Collection::empty();
         foreach ($patients as $patient) {
