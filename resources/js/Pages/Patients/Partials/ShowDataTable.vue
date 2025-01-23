@@ -1,7 +1,7 @@
 <script setup>
 import {h, inject, ref} from "vue";
 import {NDataTable} from "naive-ui";
-import {Link, usePage} from "@inertiajs/vue3";
+import {Link, router, usePage} from "@inertiajs/vue3";
 import {format} from "date-fns";
 
 const page = usePage()
@@ -40,15 +40,24 @@ const defaultColumns = ref([
         title: '№\nп/п',
         key: 'id',
         width: 70,
-        sorter: 'default',
+        sorter: true,
         sortOrder: false,
-        align: 'center'
+        align: 'center',
+        render(row) {
+            return h(
+                'div',
+                {},
+                {
+                    default: () => row.id
+                }
+            )
+        }
     },
     {
         title: 'Дата выписки',
-        key: 'extract_at',
+        key: 'lastMedcard.extract_at',
         width: 110,
-        sorter: 'default',
+        sorter: true,
         sortOrder: false,
         align: 'center',
         render(row) {
@@ -63,8 +72,8 @@ const defaultColumns = ref([
     },
     {
         title: 'ФИО',
-        key: 'fio',
-        sorter: 'default',
+        key: 'family',
+        sorter: true,
         sortOrder: false,
         width: 220,
         align: 'center',
@@ -85,7 +94,7 @@ const defaultColumns = ref([
         title: 'Дата рождения',
         key: 'brith_at',
         width: 110,
-        sorter: 'default',
+        sorter: true,
         sortOrder: false,
         align: 'center',
         render(row) {
@@ -224,17 +233,71 @@ function rowProps(row) {
     if (row.has_closed !== false) { return { class: '!bg-gray-200' } }
     return { }
 }
+
+function handleSorterChange(sorter) {
+    const query = {
+        sort_column: sorter.columnKey,
+        sort_order: null
+    }
+
+    if (sorter.order === 'descend')
+        query.sort_order = 'desc'
+    else if (sorter.order === 'ascend')
+        query.sort_order = 'asc'
+
+    const column = defaultColumns.value.find(itm => itm.key === sorter.columnKey)
+    column.sortOrder = !sorter ? false : sorter.order
+
+    router.reload({
+        data: {
+            ...page.props.ziggy.query,
+            ...query
+        }
+    })
+}
+
+const pagination = computed(() => {
+    return {
+        page: patients.value.current_page,
+        pageSize: patients.value.per_page,
+        pageCount: patients.value.last_page,
+        itemCount: patients.value.total,
+        onChange: (page) => {
+            router.reload({
+                data: {
+                    ...usePage().props.ziggy.query,
+                    page
+                }
+            })
+            pagination.value.page = page
+        },
+        prefix() {
+            return h(
+                'div',
+                {},
+                [
+                    h('div', {}, { default: () => `Кол-во пациентов: ${patients.value.total} / Кол-во выбывших пациентов: ${patients.value.total_closed}` }),
+                ]
+            )
+        }
+    }
+})
 </script>
 
 <template>
     <NDataTable
+        remote
+        ref="table"
         class="max-h-[calc(100vh-348px)] min-h-[calc(100vh-348px)] h-[calc(100vh-348px)]"
         flex-height
         bordered
+        @update:sorter="handleSorterChange"
         :row-props="rowProps"
         :single-line="false"
-        v-model:data="patients"
-        :columns="defaultColumns" />
+        :pagination="pagination"
+        v-model:data="patients.data"
+        :columns="defaultColumns">
+    </NDataTable>
 </template>
 
 <style scoped>

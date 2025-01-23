@@ -17,6 +17,8 @@ class PatientController extends Controller
     public function index()
     {
         $patients = Patient::query();
+        $sortColumn = request('sort_column');
+        $sortOrder = request('sort_order');
 
         if (request('search_value')) {
             switch(request('search_field')) {
@@ -34,22 +36,39 @@ class PatientController extends Controller
             }
         }
 
-        $patients = $patients
-            ->orderBy('id')
-            ->get();
+//        if (request('order_by')) {
+//            switch(request('order_by')) {
+//                case 'id': {
+//                    $patients = $patients->orderBy(request('order_by'), '');
+//                }
+//            }
+//        }
 
-        $registryPatient = Collection::empty();
-        foreach ($patients as $patient) {
-            $patient->load([
+        if ($sortColumn && $sortOrder) {
+            if (count(explode('.', $sortColumn)) > 1) {
+                $patients->orderByPowerJoins($sortColumn, $sortOrder);
+            } else {
+                $patients->orderBy($sortColumn, $sortOrder);
+            }
+        } else {
+            $patients->orderBy('id');
+        }
+
+        $patients = $patients->with([
                 'lastMedcard',
                 'lastMedcard.day3',
                 'lastMedcard.mes1',
                 'lastMedcard.mes3',
                 'lastMedcard.mes6',
                 'lastMedcard.mes12'
-            ]);
+            ])
+            ->paginate(30);
 
-            $patientModel = [
+//        dd($patients);
+
+        $patients->getCollection()->transform(function ($patient) {
+            return [
+                'total' => $patient->total,
                 'id' => $patient->id,
                 'family' => $patient->family,
                 'name' => $patient->name,
@@ -93,12 +112,20 @@ class PatientController extends Controller
                 ],
                 'phone' => $patient->phone
             ];
+        });
 
-            $registryPatient->push($patientModel);
-        }
+        $customPaginate = collect([
+            'total_closed' => Patient::whereHas('lastMedcard', function ($query) {
+                $query->where('closed_at', '<>', null);
+            })->count()
+        ]);
+
+        $patients = $customPaginate->merge(
+            $patients
+        );
 
         return Inertia::render('Patients/Show', [
-            'patients' => $registryPatient,
+            'patients' => $patients,
 
             // Для добавления пациента
             'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
