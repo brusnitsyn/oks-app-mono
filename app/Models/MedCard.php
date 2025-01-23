@@ -137,23 +137,28 @@ class MedCard extends Model
         static::created(function (MedCard $medCard) {
             $medCard->control_call()->create([
                 'name' => '3-й день',
-                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))->copy()->addDays(3)->getTimestampMs()
+                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
+                    ->copy()->addDays(3)->getTimestampMs()
             ]);
             $medCard->control_call()->create([
                 'name' => '1 мес',
-                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))->copy()->addMonths()->getTimestampMs()
+                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
+                    ->copy()->addMonths()->getTimestampMs()
             ]);
             $medCard->control_call()->create([
                 'name' => '3 мес',
-                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))->copy()->addMonths(3)->getTimestampMs()
+                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
+                    ->copy()->addMonths(3)->getTimestampMs()
             ]);
             $medCard->control_call()->create([
                 'name' => '6 мес',
-                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))->copy()->addMonths(6)->getTimestampMs()
+                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
+                    ->copy()->addMonths(6)->getTimestampMs()
             ]);
             $medCard->control_call()->create([
                 'name' => '12 мес',
-                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))->copy()->addMonths(12)->getTimestampMs()
+                'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
+                    ->copy()->addMonths(12)->getTimestampMs()
             ]);
         });
     }
