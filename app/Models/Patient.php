@@ -3,9 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Patient extends Model
 {
+    protected static function booted(): void
+    {
+        static::creating(function (Patient $patient) {
+            $patient->full_name = "$patient->family $patient->name $patient->ot";
+            $patient->save();
+        });
+
+        static::updating(function (Patient $patient) {
+            $patient->full_name = "$patient->family $patient->name $patient->ot";
+            $patient->save();
+        });
+    }
+
     protected $fillable = [
         'family',
         'name',
@@ -15,6 +29,7 @@ class Patient extends Model
         'dop_phone',
         'brith_at',
         'gender_id',
+        'full_name',
 
         'fias_objectid',
         'address'
@@ -40,5 +55,27 @@ class Patient extends Model
     public function gender()
     {
         return $this->belongsTo(Gender::class);
+    }
+
+    public function fio(): string
+    {
+        return "$this->family $this->name $this->ot";
+    }
+
+    public function toSearchableArray(): array
+    {
+        return array_merge([
+            'id' => (string) $this->id,
+            'full_name' => (string) $this->full_name,
+            'snils' => (string) $this->snils,
+            'phone' => (string) $this->phone,
+            'created_at' => $this->created_at->timestamp,
+        ]);
+    }
+
+    // Индекс для поискового движка
+    public function searchableAs(): string
+    {
+        return 'oks_patients_index';
     }
 }
