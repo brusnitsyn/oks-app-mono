@@ -11,7 +11,7 @@ const patients = computed(() => page.props.patients)
 function getClassForRowCallResult(result_call_id) {
     switch (result_call_id) {
         case 1:
-            return 'bg-green-300 mx-2'
+            return 'bg-green-300 mx-2.5'
         case 2:
         case 3:
             return 'bg-transparent'
@@ -39,7 +39,7 @@ const defaultColumns = ref([
     {
         title: '№\nп/п',
         key: 'id',
-        width: 70,
+        width: 65,
         sorter: true,
         sortOrder: false,
         align: 'center',
@@ -127,13 +127,13 @@ const defaultColumns = ref([
     },
     {
         title: 'Дополнительное\nлечение',
-        width: 130,
+        width: 135,
         align: 'center',
         key: 'additional_treatment',
     },
     {
         title: '3-й день',
-        width: 70,
+        width: 80,
         key: 'day3',
         align: 'center',
         className: 'relative day3 !p-0 h-[34px] !px-1',
@@ -151,7 +151,7 @@ const defaultColumns = ref([
     },
     {
         title: '1 мес',
-        width: 70,
+        width: 80,
         key: 'mes1',
         align: 'center',
         className: 'relative mes1 !p-0 h-[34px] !px-1',
@@ -169,7 +169,7 @@ const defaultColumns = ref([
     },
     {
         title: '3 мес',
-        width: 70,
+        width: 80,
         key: 'mes3',
         className: 'relative mes3 !p-0 h-[34px] !px-1',
         align: 'center',
@@ -187,7 +187,7 @@ const defaultColumns = ref([
     },
     {
         title: '6 мес',
-        width: 70,
+        width: 80,
         key: 'mes6',
         className: 'relative mes6 !p-0 h-[34px] !px-1',
         align: 'center',
@@ -205,7 +205,7 @@ const defaultColumns = ref([
     },
     {
         title: '12 мес',
-        width: 70,
+        width: 75,
         key: 'mes12',
         className: 'relative mes12 !p-0 h-[34px]',
         align: 'center',
@@ -223,7 +223,7 @@ const defaultColumns = ref([
     },
     {
         title: 'Номер телефона',
-        width: 140,
+        width: 150,
         align: 'center',
         key: 'phone',
     },
@@ -305,7 +305,7 @@ const pagination = computed(() => {
     @apply leading-4;
 }
 ::v-deep(.n-data-table-wrapper) {
-    @apply bg-white;
+    @apply bg-white leading-5;
 }
 ::v-deep(td) {
     @apply !bg-transparent;
