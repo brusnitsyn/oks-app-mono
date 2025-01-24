@@ -48,7 +48,7 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
 
 function goBack() {
     if (document.referrer.includes(window.location.origin)) {
-        router.visit(document.ref, {
+        router.visit(document.referrer, {
             preserveState: true
         })
     } else {
