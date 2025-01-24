@@ -51,11 +51,6 @@ class Patient extends Model
         return $this->belongsTo(Gender::class);
     }
 
-    public function fio(): string
-    {
-        return "$this->family $this->name $this->ot";
-    }
-
     public function toSearchableArray(): array
     {
         return array_merge([
