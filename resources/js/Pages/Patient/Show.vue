@@ -45,6 +45,16 @@ function onRestorePatient() {
 }
 
 const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_close !== null ? true : false)
+
+function goBack() {
+    if (document.referrer.includes(window.location.origin)) {
+        router.visit(document.ref, {
+            preserveState: true
+        })
+    } else {
+        router.visit(route('patients.index'))
+    }
+}
 </script>
 
 <template>
@@ -56,7 +66,7 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                         <NSpace vertical class="xl:max-w-3xl" :size="16">
                             <NCard class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
                                 <template #action>
-                                    <NButton class="absolute top-2 left-0 -translate-x-1/2 shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="router.visit(route('patients.index'))">
+                                    <NButton class="absolute top-2 left-0 -translate-x-1/2 shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }" :color="useThemeVars().value.cardColor" :text-color="useThemeVars().value.textColor3" circle @click="goBack()">
                                         <template #icon>
                                             <NIcon :component="IconChevronLeft" />
                                         </template>
