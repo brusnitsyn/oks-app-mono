@@ -108,6 +108,10 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+            'dump' => [
+                'add_extra_options' => '',
+                'dump_binary_path' => 'C:\Program Files\PostgreSQL\17\bin' // Поменять путь до pg_dump
+            ]
         ],
 
         'sqlsrv' => [
