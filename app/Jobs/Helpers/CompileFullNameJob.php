@@ -4,18 +4,21 @@ namespace App\Jobs\Helpers;
 
 use App\Models\Patient;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Queue\Queueable;
 
 class CompileFullNameJob implements ShouldQueue
 {
     use Queueable;
 
+    private $patients;
+
     /**
      * Create a new job instance.
      */
     public function __construct()
     {
-        //
+        $this->patients = Patient::all();
     }
 
     /**
@@ -23,13 +26,8 @@ class CompileFullNameJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $patients = Patient::all();
-        foreach ($patients as $patient) {
-            $patient->update([
-                'family' => $patient->family,
-                'name' => $patient->name,
-                'ot' => $patient->ot,
-            ]);
+        foreach ($this->patients as $patient) {
+            $patient->update();
         }
     }
 }
