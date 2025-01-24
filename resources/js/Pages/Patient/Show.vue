@@ -64,7 +64,7 @@ const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_clo
                                     <NFlex justify="space-between" align="center">
                                         <NSpace vertical :size="0">
                                             <NText class="text-lg font-bold">
-                                                {{ fio }}
+                                                {{ patient.full_name }}
                                             </NText>
                                             <NText v-if="hasDeleted">
                                                 Исключен по причине: {{ patient.last_medcard.med_card_reason_close.name }}

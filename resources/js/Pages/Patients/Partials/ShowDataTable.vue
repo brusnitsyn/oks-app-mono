@@ -72,7 +72,7 @@ const defaultColumns = ref([
     },
     {
         title: 'ФИО',
-        key: 'family',
+        key: 'full_name',
         sorter: true,
         sortOrder: false,
         width: 220,
@@ -85,7 +85,7 @@ const defaultColumns = ref([
                     preserveState: true
                 },
                 {
-                    default: () => `${row.family} ${row.name} ${row.ot}`,
+                    default: () => row.full_name,
                 }
             )
         }

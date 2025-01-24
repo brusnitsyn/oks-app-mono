@@ -70,6 +70,7 @@ class PatientController extends Controller
             return [
                 'total' => $patient->total,
                 'id' => $patient->id,
+                'full_name' => $patient->full_name,
                 'family' => $patient->family,
                 'name' => $patient->name,
                 'ot' => $patient->ot,
