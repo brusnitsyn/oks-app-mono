@@ -9,14 +9,8 @@ class Patient extends Model
 {
     protected static function booted(): void
     {
-        static::creating(function (Patient $patient) {
+        static::saving(function (Patient $patient) {
             $patient->full_name = "$patient->family $patient->name $patient->ot";
-            $patient->save();
-        });
-
-        static::updating(function (Patient $patient) {
-            $patient->full_name = "$patient->family $patient->name $patient->ot";
-            $patient->save();
         });
     }
 
