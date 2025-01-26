@@ -58,9 +58,7 @@ class PatientController extends Controller
         }
 
         $customPaginate = collect([
-            'total_closed' => $patients->whereHas('lastMedcard', function ($query) {
-                $query->where('closed_at', '<>', null);
-            })->count()
+            'total_closed' => 0
         ]);
 
         $patients = $patients->with([
