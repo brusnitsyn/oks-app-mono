@@ -57,6 +57,12 @@ class PatientController extends Controller
             $patients->orderBy('id');
         }
 
+        $customPaginate = collect([
+            'total_closed' => $patients->clone()->whereHas('lastMedcard', function ($query) {
+                $query->where('closed_at', '<>', null);
+            })->count()
+        ]);
+
         $patientsCollect = $patients->with([
                 'lastMedcard',
                 'lastMedcard.day3',
@@ -66,12 +72,6 @@ class PatientController extends Controller
                 'lastMedcard.mes12'
             ])
             ->paginate(30);
-
-        $customPaginate = collect([
-            'total_closed' => $patients->whereHas('lastMedcard', function ($query) {
-                $query->where('closed_at', '<>', null);
-            })->count()
-        ]);
 
 //        dd($patients);
 
