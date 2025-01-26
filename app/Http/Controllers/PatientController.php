@@ -57,6 +57,12 @@ class PatientController extends Controller
             $patients->orderBy('id');
         }
 
+        $customPaginate = collect([
+            'total_closed' => $patients->whereHas('lastMedcard', function ($query) {
+                $query->where('closed_at', '<>', null);
+            })->count()
+        ]);
+
         $patients = $patients->with([
                 'lastMedcard',
                 'lastMedcard.day3',
@@ -117,12 +123,6 @@ class PatientController extends Controller
                 'phone' => $patient->phone
             ];
         });
-
-        $customPaginate = collect([
-            'total_closed' => Patient::whereHas('lastMedcard', function ($query) {
-                $query->where('closed_at', '<>', null);
-            })->count()
-        ]);
 
         $patients = $customPaginate->merge(
             $patients
