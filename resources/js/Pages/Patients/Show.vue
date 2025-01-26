@@ -31,7 +31,7 @@ const searchValueDebounce = computed({
 
 function onSearch() {
     router.reload({
-        data: { search_field: 'fio', search_value: searchValue.value },
+        data: { search_field: 'full_name', search_value: searchValue.value },
         only: ['patients']
     })
 }

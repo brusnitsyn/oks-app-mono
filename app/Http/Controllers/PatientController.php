@@ -33,6 +33,9 @@ class PatientController extends Controller
                         ->where('name', 'like', '%' . $name . '%')
                         ->where('ot', 'like', '%' . $ot . '%');
                 }
+                default: {
+                    $patients = $patients->where(request('search_field'), 'ilike', request('search_value') . '%');
+                }
             }
         }
 
