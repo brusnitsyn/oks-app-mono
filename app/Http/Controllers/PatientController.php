@@ -57,11 +57,7 @@ class PatientController extends Controller
             $patients->orderBy('id');
         }
 
-        $customPaginate = collect([
-            'total_closed' => 0
-        ]);
-
-        $patients = $patients->with([
+        $patientsCollect = $patients->with([
                 'lastMedcard',
                 'lastMedcard.day3',
                 'lastMedcard.mes1',
@@ -71,9 +67,15 @@ class PatientController extends Controller
             ])
             ->paginate(30);
 
+        $customPaginate = collect([
+            'total_closed' => $patients->whereHas('lastMedcard', function ($query) {
+                $query->where('closed_at', '<>', null);
+            })->count()
+        ]);
+
 //        dd($patients);
 
-        $patients->getCollection()->transform(function ($patient) {
+        $patientsCollect->getCollection()->transform(function ($patient) {
             return [
                 'total' => $patient->total,
                 'id' => $patient->id,
@@ -122,12 +124,12 @@ class PatientController extends Controller
             ];
         });
 
-        $patients = $customPaginate->merge(
-            $patients
+        $patientsCollect = $customPaginate->merge(
+            $patientsCollect
         );
 
         return Inertia::render('Patients/Show', [
-            'patients' => $patients,
+            'patients' => $patientsCollect,
 
             // Для добавления пациента
             'medDrugsStatuses' => fn () => \App\Models\MedDrugsStatus::all()->except(['id', 'name']),
