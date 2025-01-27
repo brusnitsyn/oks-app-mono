@@ -271,6 +271,7 @@ const resultCall = computed({
         switch (value) {
             case 1:
                 form.survey_result_id = null
+                propsData.value.called_at = 0
                 break
             case 2:
                 form.survey_result_id = 1
