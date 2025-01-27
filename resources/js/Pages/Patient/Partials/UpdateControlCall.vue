@@ -156,11 +156,15 @@ function hasDisableAnswer(answerId, questionId) {
 }
 
 // Предварительная проверка ответов
-for (const answerId of Object.values(propsData.value.answers)) {
-    const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
-    shadowSelectedAnswers.value.push(findShadow)
-    hasDisableAnswer(findShadow.id)
+function setupAnswers() {
+    for (const answerId of Object.values(propsData.value.answers)) {
+        const findShadow = propsData.value.survey.survey_answers.find(itm => itm.id === answerId)
+        shadowSelectedAnswers.value.push(findShadow)
+        hasDisableAnswer(findShadow.id)
+    }
 }
+
+setupAnswers()
 
 // Предварительная калькуляция процентов ответов
 for (const surveyChapter of propsData.value.survey.survey_chapters) {
@@ -271,11 +275,11 @@ const resultCall = computed({
         switch (value) {
             case 1:
                 form.survey_result_id = null
-                propsData.value.called_at = 0
                 break
             case 2:
                 form.survey_result_id = 1
-                form.answers = {}
+                form.answers = Map()
+                setupAnswers()
                 break
             case 3:
                 form.survey_result_id = 1
