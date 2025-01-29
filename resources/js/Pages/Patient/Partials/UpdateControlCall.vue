@@ -278,7 +278,7 @@ const resultCall = computed({
                 break
             case 2:
                 form.survey_result_id = 1
-                form.answers = Map()
+                form.answers = new Map()
                 setupAnswers()
                 break
             case 3:
