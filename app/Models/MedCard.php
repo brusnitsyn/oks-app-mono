@@ -109,7 +109,7 @@ class MedCard extends Model
 
     public function day3()
     {
-        return $this->hasOne(MedCardControlCall::class)->where('name', '3-й день');
+        return $this->hasOne(MedCardControlCall::class)->where('name', '4-й день');
     }
 
     public function mes1()
@@ -136,7 +136,7 @@ class MedCard extends Model
     {
         static::created(function (MedCard $medCard) {
             $medCard->control_call()->create([
-                'name' => '3-й день',
+                'name' => '4-й день',
                 'call_at' => Carbon::createFromTimestampMs($medCard->extract_at, config('app.timezone'))
                     ->copy()->addDays(3)->getTimestampMs()
             ]);

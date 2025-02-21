@@ -132,7 +132,7 @@ const defaultColumns = ref([
         key: 'additional_treatment',
     },
     {
-        title: '3-й день',
+        title: '4-й день',
         width: 80,
         key: 'day3',
         align: 'center',
