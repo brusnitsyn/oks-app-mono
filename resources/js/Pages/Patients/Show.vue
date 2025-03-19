@@ -8,7 +8,9 @@ import DataTableLegend from "@/Pages/Patients/Partials/DataTableLegend.vue";
 import SearchPatientInput from "@/Pages/Patients/Partials/SearchPatientInput.vue";
 import debounce from "@/Utils/debounce.js";
 import {router, usePage} from "@inertiajs/vue3";
+import {useCheckScope} from "@/Composables/useCheckScope.js";
 
+const { scopes, hasScope } = useCheckScope()
 const page = usePage()
 const showModalCreatePatient = ref(false)
 
@@ -43,7 +45,7 @@ function onSearch() {
             Регистр пациентов с ОКС
         </template>
         <template #headermore>
-            <NButton type="primary" @click="showModalCreatePatient = true">
+            <NButton v-if="hasScope(scopes.CAN_CREATE_PATIENT)" type="primary" @click="showModalCreatePatient = true">
                 <template #icon>
                     <NIcon :component="IconSquareRoundedPlus" />
                 </template>

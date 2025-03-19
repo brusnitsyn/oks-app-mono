@@ -23,6 +23,9 @@ import AppModal from "@/Components/AppModal.vue";
 import UpdateModalForm from "@/Pages/Patient/Partials/UpdateModalForm.vue";
 import EditControlCallButton from "@/Pages/Patient/Partials/EditControlCallButton.vue";
 import DeleteMedcardForm from "@/Pages/Patient/Partials/DeleteMedcardForm.vue";
+import {useCheckScope} from "@/Composables/useCheckScope.js";
+
+const { scopes, hasScope } = useCheckScope()
 const page = usePage()
 
 const patient = computed(() => page.props.patient)
@@ -80,18 +83,20 @@ function goBack() {
                                             </NText>
                                         </NSpace>
 
-                                        <NButton v-if="!hasDeleted" type="error" @click="onDeletePatient">
-                                            Исключить из регистра
-                                        </NButton>
-                                        <NButton v-else type="info" @click="onRestorePatient">
-                                            Вернуть в регистр
-                                        </NButton>
+                                        <div v-if="hasScope(scopes.CAN_DELETE_PATIENT)">
+                                            <NButton v-if="!hasDeleted" type="error" @click="onDeletePatient">
+                                                Исключить из регистра
+                                            </NButton>
+                                            <NButton v-else type="info" @click="onRestorePatient">
+                                                Вернуть в регистр
+                                            </NButton>
+                                        </div>
                                     </NFlex>
                                 </template>
                             </NCard>
 
                             <NCard title="Персональная информация" class="relative shadow" :style="{ '--tw-shadow': `0 0 4px 0 rgba(236, 102, 8, 0.5)` }">
-                                <template v-if="!hasDeleted" #header-extra>
+                                <template v-if="!hasDeleted && hasScope(scopes.CAN_UPDATE_PATIENT)" #header-extra>
                                     <NButton text @click="showEditModal = true">
                                         <template #icon>
                                             <NIcon :component="IconEdit" />

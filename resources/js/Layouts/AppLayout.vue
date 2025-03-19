@@ -17,9 +17,11 @@ import {
 } from 'naive-ui'
 import {IconDoorExit, IconMenu3, IconSettings2, IconUserHexagon, IconUsers} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
-import NaiveProvider from "@/Layouts/NaiveProvider.vue";
-import {useStorage} from "@vueuse/core";
-import {isLargeScreen, isMediumScreen, isSmallScreen} from "@/Utils/mediaQuery.js";
+import NaiveProvider from "@/Layouts/NaiveProvider.vue"
+import {useStorage} from "@vueuse/core"
+import {isLargeScreen, isMediumScreen, isSmallScreen} from "@/Utils/mediaQuery.js"
+import {useCheckScope} from "@/Composables/useCheckScope.js";
+import {useScope} from "@/Composables/useScope.js";
 
 defineProps({
     title: String,
@@ -54,6 +56,19 @@ const menuOptions = [
             }
         ),
         key: 'Patients',
+        icon: renderIcon(IconUsers)
+    },
+    {
+        label: () => h(
+            Link,
+            {
+                href: route('admin.index'),
+            },
+            {
+                default: () => 'Администрирование'
+            }
+        ),
+        key: 'Admin',
         icon: renderIcon(IconUsers)
     }
 ]
@@ -103,7 +118,7 @@ const logout = () => {
 
             <Banner/>
 
-            <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed" style="background-image: url('/assets/svg/bg.svg');">
+            <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed bg-center will-change-transform" style="background-image: url('/assets/svg/bg.svg');">
                 <NLayout position="absolute" class="!bg-transparent">
                     <NLayoutHeader class="p-4 px-4 pr-[24px] lg:px-[24px]" bordered>
                         <NFlex justify="space-between" align="center">
@@ -119,7 +134,7 @@ const logout = () => {
                                                     {{ user.name }}
                                                 </NText>
                                                 <NText>
-                                                    {{ user.login }}
+                                                    {{ user.role.name }}
                                                 </NText>
                                             </NSpace>
                                             <NAvatar :src="user.profile_photo_url" round size="large" />
@@ -169,9 +184,16 @@ const logout = () => {
                         position="absolute"
                         class="p-4 px-[24px]"
                     >
-                        &copy;
-                        <Link href="https://aokb28.su">Амурская областная клиническая больница</Link>
-                        2024
+                        <NFlex justify="space-between">
+                            <div>
+                                &copy;
+                                <Link href="https://aokb28.su">Амурская областная клиническая больница</Link>
+                                2024
+                            </div>
+                            <div>
+                                Напишите нам, если возникла ошибка <NA href="mailto:support@amurokb.ru">support@amurokb.ru</NA>
+                            </div>
+                        </NFlex>
                     </NLayoutFooter>
                 </NLayout>
             </div>

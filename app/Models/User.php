@@ -69,8 +69,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function hasScope($scope): bool
+    {
+        return in_array($scope, $this->role->scopes);
     }
 }

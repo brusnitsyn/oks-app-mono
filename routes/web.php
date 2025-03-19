@@ -4,22 +4,25 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+//Route::get('/', function () {
+//    return Inertia::render('Welcome', [
+//        'canLogin' => Route::has('login'),
+//        'canRegister' => Route::has('register'),
+//        'laravelVersion' => Application::VERSION,
+//        'phpVersion' => PHP_VERSION,
+//    ]);
+//});
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/', [\App\Http\Controllers\PatientController::class, 'index'])->name('patients.index');
-    Route::post('/', [\App\Http\Controllers\PatientController::class, 'create'])->name('patients.create');
+    Route::get('/', [\App\Http\Controllers\PatientController::class, 'index'])
+        ->name('patients.index');
+    Route::post('/', [\App\Http\Controllers\PatientController::class, 'create'])
+        ->middleware('')
+        ->name('patients.create');
 
 //    Route::prefix('patient')->group(function () {
 //        Route::prefix('{patient}')->group(function () {
@@ -41,6 +44,10 @@ Route::middleware([
         Route::prefix('{controlCall}')->group(function () {
             Route::put('/', [\App\Http\Controllers\MedCardControlCallController::class, 'update'])->name('control.call.update');
         });
+    });
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     });
 });
 
