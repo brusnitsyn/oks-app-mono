@@ -1,0 +1,212 @@
+{
+    "tables": {
+        "patients": "Пациенты",
+        "disps": "Диспансеризации",
+        "med_cards": "Медицинские карты",
+        "patient_med_cards": "Карты пациентов",
+        "lpus": "Мед. учреждения",
+        "mkbs": "Диагнозы МКБ",
+        "med_drugs_statuses": "Статусы лекарств",
+        "med_drugs_periods": "Периоды лечения",
+        "complications": "Осложнения",
+        "med_card_complications": "Осложнения карт",
+        "med_card_mkb_accompanyings": "Сопутствующие диагнозы",
+        "med_card_reason_closes": "Причины закрытия карт",
+        "med_card_additional_treatments": "Доп. методы лечения",
+        "control_call_results": "Результаты контрольных звонков",
+        "surveys": "Опросы",
+        "med_card_control_calls": "Контрольные звонки",
+        "survey_chapters": "Разделы опросов",
+        "survey_chapter_questions": "Вопросы опросов",
+        "survey_chapter_answers": "Ответы опросов",
+        "med_card_survey_answers": "Ответы пациентов",
+        "survey_results": "Результаты опросов",
+        "genders": "Пол"
+    },
+    "columns": {
+        "patients": {
+            "id": "ID",
+            "family": "Фамилия",
+            "name": "Имя",
+            "ot": "Отчество",
+            "snils": "СНИЛС",
+            "phone": "Телефон",
+            "dop_phone": "Доп. телефон",
+            "brith_at": "Дата рождения",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления",
+            "gender_id": "ID пола",
+            "fias_objectid": "ID объекта ФИАС",
+            "address": "Адрес",
+            "full_name": "Полное имя"
+        },
+        "disps": {
+            "id": "ID",
+            "start_at": "Дата начала",
+            "closed_at": "Дата закрытия",
+            "deleted_at": "Дата удаления",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_cards": {
+            "id": "ID",
+            "num": "Номер",
+            "recipient_at": "Дата получения",
+            "extract_at": "Дата выписки",
+            "closed_at": "Дата закрытия",
+            "deleted_at": "Дата удаления",
+            "med_drugs_status_id": "ID статуса лекарств",
+            "disp_id": "ID диспансеризации",
+            "med_drugs_period_id": "ID периода лечения",
+            "med_card_additional_treatment_id": "ID доп. лечения",
+            "med_card_reason_close_id": "ID причины закрытия",
+            "patient_id": "ID пациента",
+            "lpu_id": "ID мед. учреждения",
+            "mkb_id": "ID диагноза МКБ",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "patient_med_cards": {
+            "id": "ID",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "lpus": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "mkbs": {
+            "id": "ID",
+            "ds": "Код диагноза",
+            "name": "Название",
+            "has_attendant": "Есть сопровождение",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_drugs_statuses": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_drugs_periods": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "complications": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_complications": {
+            "id": "ID",
+            "med_card_id": "ID мед. карты",
+            "complication_id": "ID осложнения",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_mkb_accompanyings": {
+            "id": "ID",
+            "med_card_id": "ID мед. карты",
+            "mkb_id": "ID диагноза МКБ",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_reason_closes": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_additional_treatments": {
+            "id": "ID",
+            "name": "Название",
+            "short_name": "Короткое название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "control_call_results": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "surveys": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_control_calls": {
+            "id": "ID",
+            "med_card_id": "ID мед. карты",
+            "control_call_result_id": "ID результата звонка",
+            "survey_result_id": "ID результата опроса",
+            "survey_id": "ID опроса",
+            "name": "Название",
+            "call_at": "Время звонка",
+            "called_at": "Время ответа",
+            "info": "Информация",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "survey_chapters": {
+            "id": "ID",
+            "survey_id": "ID опроса",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "survey_chapter_questions": {
+            "id": "ID",
+            "survey_id": "ID опроса",
+            "survey_chapter_id": "ID раздела",
+            "question": "Вопрос",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "survey_chapter_answers": {
+            "id": "ID",
+            "survey_chapter_question_id": "ID вопроса",
+            "answer": "Ответ",
+            "has_send_smp": "Отправлять в СМП",
+            "has_send_doctor": "Отправлять врачу",
+            "has_attention": "Требует внимания",
+            "has_need_consult_doctor": "Требует консультации",
+            "has_disable_other_answer": "Блокировать другие ответы",
+            "has_disable_answers": "Блокировать ответы",
+            "has_show_disp_date_picker": "Показывать выбор даты",
+            "disable_answer_ids": "ID блокируемых ответов",
+            "enable_answer_ids": "ID разрешаемых ответов",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "med_card_survey_answers": {
+            "id": "ID",
+            "med_card_id": "ID мед. карты",
+            "med_card_control_call_id": "ID контрольного звонка",
+            "survey_id": "ID опроса",
+            "survey_chapter_question_id": "ID вопроса",
+            "survey_chapter_answer_id": "ID ответа",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "survey_results": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        },
+        "genders": {
+            "id": "ID",
+            "name": "Название",
+            "created_at": "Дата создания",
+            "updated_at": "Дата обновления"
+        }
+    }
+}

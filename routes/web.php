@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportTemplateController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,6 +44,51 @@ Route::middleware([
             Route::put('/', [\App\Http\Controllers\MedCardControlCallController::class, 'update'])->name('control.call.update');
         });
     });
+
+    Route::prefix('reports')->group(function () {
+        // Страницы отчетов
+        Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/{template}', [ReportController::class, 'show'])->name('reports.show');
+
+        // API для выполнения отчетов
+        Route::post('/{template}/execute', [ReportController::class, 'execute'])
+            ->name('reports.execute');
+    });
+
+    Route::prefix('api')->group(function () {
+//        Route::post('report-templates', [ReportTemplateController::class, 'store'])
+//            ->name('api.report-templates.store');
+        // Шаблоны отчетов
+        Route::apiResource('report-templates', ReportTemplateController::class)
+            ->except(['update'])->name('store', 'api.report-templates.store');
+
+        // Выполнение отчетов
+        Route::post('reports/{template}/execute', [ReportController::class, 'execute']);
+
+        Route::post('/report-templates/get-options', [ReportTemplateController::class, 'getOptions'])
+            ->name('report-templates.get-options');
+
+        // Справочные данные для параметров
+        Route::get('reference-data/{table}', function ($table) {
+            $allowedTables = ['lpus', 'mkbs', 'control_call_results', 'surveys'];
+
+            if (!in_array($table, $allowedTables)) {
+                abort(404);
+            }
+
+            return DB::table($table)->get();
+        });
+    });
+//
+//    Route::prefix('api')->group(function () {
+//        Route::prefix('reports')->group(function () {
+//            Route::get('structure', [ReportController::class, 'index']);
+//            Route::post('table-structure', [ReportController::class, 'getTableStructure']);
+//            Route::post('generate', [ReportController::class, 'generateReport']);
+//            Route::post('available-tables', [ReportController::class, 'getAvailableTables']);
+//            Route::post('export', [ReportController::class, 'exportReport']);
+//        });
+//    });
 });
 
 
