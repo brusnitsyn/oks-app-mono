@@ -78,6 +78,7 @@ const getSelectOptions = (param) => {
                     v-else-if="param.type === 'date'"
                     v-model:value="params[param.name]"
                     type="date"
+                    class="w-full"
                     clearable
                 />
 

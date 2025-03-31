@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import {ref, computed, h} from 'vue';
 import {
     NDataTable,
     NEmpty,
@@ -35,6 +35,15 @@ const pagination = ref({
     onUpdatePageSize: (pageSize) => {
         pagination.value.pageSize = pageSize;
         pagination.value.page = 1;
+    },
+    prefix() {
+        return h(
+            'div',
+            {},
+            [
+                h('div', {}, { default: () => `Кол-во пациентов: ${props.data.length}` }),
+            ]
+        )
     }
 });
 
@@ -71,7 +80,7 @@ const exportToExcel = async () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `report_${template.name}.xlsx`);
+        link.setAttribute('download', `${template.name}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.remove();

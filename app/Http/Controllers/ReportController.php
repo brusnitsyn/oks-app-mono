@@ -272,18 +272,18 @@ class ReportController extends Controller
     public function export(ReportTemplate $template)
     {
         $this->authorize('view', $template);
-
+        $params = request()->all();
         // Получаем данные отчета
         $results = $template->type === 'sql'
-            ? $this->executeSqlReport($template, request()->all())
-            : $this->executeBuilderReport($template, request()->all());
+            ? $this->executeSqlReport($template, $params)
+            : $this->executeBuilderReport($template, $params);
 
         // Генерируем имя файла
-        $filename = 'report_'.$template->name.'_'.now()->format('Y-m-d').'.xlsx';
+        $filename = $template->name.'.xlsx';
 
         // Возвращаем Excel файл
         return Excel::download(
-            new ReportTemplateExport($results, $this->getReportHeaders($template)),
+            new ReportTemplateExport($params, $template->toArray(), $results, $this->getReportHeaders($template)),
             $filename
         );
     }

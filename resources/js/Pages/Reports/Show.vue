@@ -35,27 +35,31 @@ const executeBuilderReport = (params) => {
 </script>
 
 <template>
-    <app-layout :title="`Отчет: ${template.name}`">
+    <app-layout :title="template.name">
         <template #header>
-            Отчет: {{ template.name }}
+            {{ template.name }}
         </template>
 
         <n-card>
-            <report-params-form
-                v-if="template.type === 'sql'"
-                v-model:params="params"
-                :template="template"
-                @submit="executeSqlReport"
-            />
+            <NGrid cols="6">
+                <NGi>
+                    <report-params-form
+                        v-if="template.type === 'sql'"
+                        v-model:params="params"
+                        :template="template"
+                        @submit="executeSqlReport"
+                    />
 
-            <report-builder-form
-                v-else
-                v-model:params="params"
-                :template="template"
-                @submit="executeBuilderReport"
-            />
+                    <report-builder-form
+                        v-else
+                        v-model:params="params"
+                        :template="template"
+                        @submit="executeBuilderReport"
+                    />
+                </NGi>
+            </NGrid>
 
-            <n-divider />
+            <n-divider v-if="results" />
 
             <report-results
                 v-if="results"
