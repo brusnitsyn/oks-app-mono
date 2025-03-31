@@ -96,6 +96,7 @@ const downloadFile = (content, filename, mimeType) => {
         <n-data-table
             :columns="computedColumns"
             :data="data"
+            :scroll-x="computedColumns.length * 200"
             :bordered="false"
             :pagination="pagination"
             :loading="loading"
