@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportTemplateExport;
 use App\Models\ReportTemplate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -265,5 +267,83 @@ class ReportController extends Controller
         }
 
         return $filter;
+    }
+
+    public function export(ReportTemplate $template)
+    {
+        $this->authorize('view', $template);
+
+        // Получаем данные отчета
+        $results = $template->type === 'sql'
+            ? $this->executeSqlReport($template, request()->all())
+            : $this->executeBuilderReport($template, request()->all());
+
+        // Генерируем имя файла
+        $filename = 'report_'.$template->name.'_'.now()->format('Y-m-d').'.xlsx';
+
+        // Возвращаем Excel файл
+        return Excel::download(
+            new ReportTemplateExport($results, $this->getReportHeaders($template)),
+            $filename
+        );
+    }
+
+    protected function getReportHeaders(ReportTemplate $template): array
+    {
+        // Для SQL-шаблонов
+        if ($template->type === 'sql') {
+            return $this->getHeadersFromSql($template->config['sql']);
+        }
+
+        // Для Builder-шаблонов
+        return array_map(function($field) {
+            return str_contains($field, '.')
+                ? explode('.', $field)[1]
+                : $field;
+        }, $template->config['fields']);
+    }
+
+    protected function getHeadersFromSql(string $sql): array
+    {
+        // Извлекаем часть SELECT из запроса
+        preg_match('/SELECT(.*?)FROM/is', $sql, $matches);
+        if (empty($matches[1])) {
+            return [];
+        }
+
+        $selectPart = $matches[1];
+        $columns = explode(',', $selectPart);
+
+        $headers = [];
+        foreach ($columns as $column) {
+            $column = trim(preg_replace('/\s+/', ' ', $column));
+
+            // 1. Явное указание AS с кавычками
+            if (preg_match('/\s+as\s+"([^"]+)"/i', $column, $aliasMatches)) {
+                $headers[] = $aliasMatches[1];
+                continue;
+            }
+
+            // 2. AS без кавычек
+            if (preg_match('/\s+as\s+([^\s,]+)/i', $column, $aliasMatches)) {
+                $headers[] = $aliasMatches[1];
+                continue;
+            }
+
+            // 3. Пропускаем технические столбцы без AS
+            if (str_contains($column, 'to_char(to_timestamp')) {
+                continue;
+            }
+
+            // 4. Для простых полей таблиц
+            if (preg_match('/\.([^\s,]+)$/', $column, $fieldMatches)) {
+                $headers[] = $fieldMatches[1];
+                continue;
+            }
+
+            // 5. Все остальное пропускаем
+        }
+
+        return array_filter($headers);
     }
 }

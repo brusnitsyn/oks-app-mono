@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { NCard, NButton, NIcon, NTabs, NTabPane } from 'naive-ui';
-// import { PlusOutlined } from '@vicons/antd';
+import { PlusOutlined } from '@vicons/antd';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import TemplateList from '@/Components/TemplateList.vue';
 import TemplateModal from '@/Components/TemplateModal.vue';

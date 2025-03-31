@@ -12,6 +12,8 @@ const props = defineProps({
     results: Array,
 });
 
+const params = ref({})
+
 const columns = computed(() => {
     if (!props.results || props.results.length === 0) return [];
 
@@ -41,12 +43,14 @@ const executeBuilderReport = (params) => {
         <n-card>
             <report-params-form
                 v-if="template.type === 'sql'"
+                v-model:params="params"
                 :template="template"
                 @submit="executeSqlReport"
             />
 
             <report-builder-form
                 v-else
+                v-model:params="params"
                 :template="template"
                 @submit="executeBuilderReport"
             />
@@ -57,6 +61,7 @@ const executeBuilderReport = (params) => {
                 v-if="results"
                 :columns="columns"
                 :data="results"
+                :params="params"
             />
         </n-card>
     </app-layout>

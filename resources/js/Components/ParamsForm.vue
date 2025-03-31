@@ -12,7 +12,7 @@ const props = defineProps({
 
 const emit = defineEmits(['submit']);
 
-const params = ref({});
+const params = defineModel('params')
 const selectOptions = ref({});
 
 // Инициализация параметров
@@ -71,6 +71,7 @@ const getSelectOptions = (param) => {
                     v-if="param.type === 'string'"
                     v-model:value="params[param.name]"
                     :placeholder="param.default || ''"
+                    clearable
                 />
 
                 <n-date-picker

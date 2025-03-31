@@ -11,6 +11,7 @@ import {
     NText
 } from 'naive-ui';
 import { DownloadOutlined, FileExcelOutlined } from '@vicons/antd';
+import {usePage} from "@inertiajs/vue3";
 
 const props = defineProps({
     columns: Array,
@@ -18,7 +19,8 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    loading: Boolean
+    loading: Boolean,
+    params: {}
 });
 
 const pagination = ref({
@@ -57,9 +59,26 @@ const exportToCSV = () => {
     window.$message.success('Отчет экспортирован в CSV');
 };
 
-const exportToExcel = () => {
-    // В реальном проекте используйте библиотеку типа xlsx
-    window.$message.info('Экспорт в Excel будет реализован позже');
+const exportToExcel = async () => {
+    const template  = usePage().props.template
+    try {
+        const response = await axios.post(
+            `/api/report-templates/${template.id}/export`,
+            { ...props.params },
+            { responseType: 'blob' }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `report_${template.name}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    } catch (error) {
+        console.error('Export failed:', error);
+        window.$message.error('Ошибка при экспорте отчета');
+    }
 };
 
 const downloadFile = (content, filename, mimeType) => {

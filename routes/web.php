@@ -62,6 +62,9 @@ Route::middleware([
         Route::apiResource('report-templates', ReportTemplateController::class)
             ->except(['update'])->name('store', 'api.report-templates.store');
 
+        Route::post('report-templates/{template}/export', [ReportController::class, 'export'])
+            ->name('report-templates.export');
+
         // Выполнение отчетов
         Route::post('reports/{template}/execute', [ReportController::class, 'execute']);
 

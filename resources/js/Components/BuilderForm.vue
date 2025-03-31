@@ -107,6 +107,8 @@ const formData = ref({
     filters: props.template?.config?.filters || []
 });
 
+const params = defineModel('params')
+
 const operatorOptions = [
     { label: '=', value: '=' },
     { label: '!=', value: '!=' },
