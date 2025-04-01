@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import { NCard, NButton, NIcon, NTabs, NTabPane } from 'naive-ui';
+import {NCard, NButton, NIcon, NTabs, NTabPane, useDialog} from 'naive-ui';
 import { PlusOutlined } from '@vicons/antd';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import TemplateList from '@/Components/TemplateList.vue';
@@ -17,13 +17,21 @@ const showTemplateModal = ref(false);
 const executeReport = (template) => {
     router.visit(route('reports.show', template.id));
 };
-
 const deleteTemplate = async (template) => {
-    router.delete(route('report-templates.destroy', template.id), {
-        onSuccess: () => {
-            router.reload();
+    window.$dialog.warning({
+        title: 'Удаление шаблона',
+        content: `Вы хотите удалить шаблон: ${template.name}?`,
+        negativeText: 'Отмена',
+        positiveText: 'Удалить',
+        onPositiveClick: () => {
+            router.delete(route('report-templates.destroy', template.id), {
+                onSuccess: () => {
+                    router.reload();
+                }
+            });
         }
-    });
+    })
+
 };
 
 const loadTemplates = () => {

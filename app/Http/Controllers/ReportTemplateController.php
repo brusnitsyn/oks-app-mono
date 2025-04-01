@@ -69,10 +69,9 @@ class ReportTemplateController extends Controller
         return response()->json($template);
     }
 
-    public function destroy(ReportTemplate $template): JsonResponse
+    public function destroy(ReportTemplate $report_template)
     {
-        $this->authorize('delete', $template);
-        $template->delete();
-        return response()->json(null, 204);
+        $this->authorize('delete', $report_template);
+        $report_template->delete();
     }
 }

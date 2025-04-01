@@ -1,7 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { NForm, NFormItem, NInput, NDatePicker, NSelect, NButton, NSpace } from 'naive-ui';
-import {router} from "@inertiajs/vue3";
+import { ref, onMounted } from 'vue'
+import { NForm, NFormItem, NInput, NDatePicker, NSelect, NButton, NSpace } from 'naive-ui'
 
 const props = defineProps({
     template: {
