@@ -36,7 +36,7 @@ const formatDate = (dateString) => {
 
         <n-grid
             v-else
-            cols="1 600:2 1200:3"
+            cols="1 md:2 xl:3"
             x-gap="12"
             y-gap="12"
             responsive="screen"

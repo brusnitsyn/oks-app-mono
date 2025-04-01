@@ -103,7 +103,7 @@ const logout = () => {
 
             <Banner/>
 
-            <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed" style="background-image: url('/assets/svg/bg.svg');">
+            <div class="h-screen max-h-screen bg-cover bg-no-repeat bg-fixed will-change-transform" style="background-image: url('/assets/svg/bg.svg');">
                 <NLayout position="absolute" class="!bg-transparent">
                     <NLayoutHeader class="p-4 px-4 pr-[24px] lg:px-[24px]" bordered>
                         <NFlex justify="space-between" align="center">
