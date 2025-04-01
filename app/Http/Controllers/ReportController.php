@@ -122,6 +122,12 @@ class ReportController extends Controller
                 throw new \InvalidArgumentException('SQL query must be a string');
             }
 
+            foreach ($params as $key => $param) {
+                if (is_array($param)) {
+                    $params[$key] = "{".implode(',', $param)."}";
+                }
+            }
+
             // Выполняем запрос
             return DB::select($sql, $params);
         } catch (\Exception $e) {

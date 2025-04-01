@@ -40,6 +40,7 @@ class StoreReportTemplateRequest extends FormRequest
             ],
             'config.params.*.label' => 'nullable|string|max:255',
             'config.params.*.required' => 'boolean',
+            'config.params.*.multiple' => 'boolean',
             'config.params.*.default' => 'nullable|string|max:255',
             'config.params.*.query' => 'nullable|string|max:1000',
             'config.tables' => 'required_if:type,builder|array',

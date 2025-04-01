@@ -48,6 +48,7 @@ const createParam = () => ({
                         style="width: 150px"
                     />
                     <n-checkbox v-model:checked="value.required">Обязательный</n-checkbox>
+                    <n-checkbox v-if="value.type === 'select'" v-model:checked="value.multiple">Множественный выбор</n-checkbox>
                 </n-space>
 
                 <n-input v-model:value="value.label" placeholder="Описание параметра" />

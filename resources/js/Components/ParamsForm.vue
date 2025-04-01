@@ -88,6 +88,7 @@ const getSelectOptions = (param) => {
                     :options="getSelectOptions(param)"
                     filterable
                     clearable
+                    :multiple="param.multiple"
                 />
             </n-form-item>
 
