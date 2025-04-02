@@ -6,6 +6,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import ReportParamsForm from '@/Components/ParamsForm.vue';
 import ReportBuilderForm from '@/Components/BuilderForm.vue';
 import ReportResults from '@/Components/Results.vue';
+import BackButton from "@/Components/BackButton.vue";
 
 const props = defineProps({
     template: Object,
@@ -37,7 +38,10 @@ const executeBuilderReport = (params) => {
 <template>
     <app-layout :title="template.name">
         <template #header>
-            {{ template.name }}
+            <NSpace vertical>
+                <BackButton :parent-route="route('reports.index')" />
+                {{ template.name }}
+            </NSpace>
         </template>
 
         <n-card>
