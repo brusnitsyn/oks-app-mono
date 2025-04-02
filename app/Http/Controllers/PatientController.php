@@ -20,23 +20,30 @@ class PatientController extends Controller
         $sortColumn = request('sort_column');
         $sortOrder = request('sort_order');
 
+        $filters = [
+            request('search_field') => request('search_value')
+        ];
+
+        $patients = $patients->filter($filters);
+
         if (request('search_value')) {
-            switch(request('search_field')) {
-                case 'fio': {
-                    $fio = explode(' ', request('search_value'));
 
-                    $family = $fio[0];
-                    $name = $fio[1] ?? null;
-                    $ot = $fio[2] ?? null;
-
-                    $patients = $patients->where('family', 'ilike', '%' . $family . '%')
-                        ->where('name', 'like', '%' . $name . '%')
-                        ->where('ot', 'like', '%' . $ot . '%');
-                }
-                default: {
-                    $patients = $patients->where(request('search_field'), 'ilike', request('search_value') . '%');
-                }
-            }
+//            switch(request('search_field')) {
+//                case 'fio': {
+//                    $fio = explode(' ', request('search_value'));
+//
+//                    $family = $fio[0];
+//                    $name = $fio[1] ?? null;
+//                    $ot = $fio[2] ?? null;
+//
+//                    $patients = $patients->where('family', 'ilike', '%' . $family . '%')
+//                        ->where('name', 'like', '%' . $name . '%')
+//                        ->where('ot', 'like', '%' . $ot . '%');
+//                }
+//                default: {
+//                    $patients = $patients->where(request('search_field'), 'ilike', request('search_value') . '%');
+//                }
+//            }
         }
 
 //        if (request('order_by')) {
@@ -48,11 +55,7 @@ class PatientController extends Controller
 //        }
 
         if ($sortColumn && $sortOrder) {
-            if (count(explode('.', $sortColumn)) > 1) {
-                $patients->orderByPowerJoins($sortColumn, $sortOrder);
-            } else {
-                $patients->orderBy($sortColumn, $sortOrder);
-            }
+            $patients->sort($sortColumn, $sortOrder);
         } else {
             $patients->orderBy('id');
         }

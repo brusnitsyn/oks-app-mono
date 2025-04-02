@@ -2,17 +2,32 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
 class Patient extends Model
 {
+    use Filterable;
+
     protected static function booted(): void
     {
         static::saving(function (Patient $patient) {
             $patient->full_name = "$patient->family $patient->name $patient->ot";
         });
     }
+
+    // Доступные поля для фильтрации
+    protected $filterable = [
+        'full_name'
+    ];
+
+    // Доступные поля для сортировки
+    protected $sortable = [
+        'id',
+        'brith_at',
+        'full_name'
+    ];
 
     protected $fillable = [
         'family',
@@ -66,5 +81,18 @@ class Patient extends Model
     public function searchableAs(): string
     {
         return 'oks_patients_index';
+    }
+
+    public function scopeFullName($query, $fio)
+    {
+        $fio = explode(' ', $fio);
+
+        $family = $fio[0];
+        $name = $fio[1] ?? null;
+        $ot = $fio[2] ?? null;
+
+        return $query->where('family', 'ilike', '%' . $family . '%')
+            ->where('name', 'ilike', '%' . $name . '%')
+            ->where('ot', 'ilike', '%' . $ot . '%');
     }
 }
