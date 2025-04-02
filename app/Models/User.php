@@ -73,4 +73,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    protected function defaultProfilePhotoUrl(): string
+    {
+        $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
+            return mb_substr($segment, 0, 1);
+        })->join(' '));
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=EC6608&background=FBDAC4&bold=true&uppercase=true&format=svg';
+    }
 }
