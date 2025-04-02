@@ -15,7 +15,7 @@ import {
     NIcon,
     NImage, NAvatar, NText
 } from 'naive-ui'
-import {IconDoorExit, IconMenu3, IconSettings2, IconUserHexagon, IconUsers} from '@tabler/icons-vue'
+import {IconDoorExit, IconMenu3, IconReportAnalytics, IconUsers} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
 import {useStorage} from "@vueuse/core";
@@ -67,7 +67,7 @@ const menuOptions = [
             }
         ),
         key: 'Reports',
-        icon: renderIcon(IconUsers)
+        icon: renderIcon(IconReportAnalytics)
     },
 ]
 
