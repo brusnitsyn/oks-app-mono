@@ -46,12 +46,13 @@ function onRestorePatient() {
 const hasDeleted = computed(() => patient.value.last_medcard.med_card_reason_close !== null ? true : false)
 
 function goBack() {
-    if (document.referrer.includes(window.location.origin)) {
-        router.visit(document.referrer, {
-            preserveState: true
-        })
+    if (window.history.length > 1) {
+        window.history.back();
     } else {
-        router.visit(route('patients.index'))
+        router.visit(route('patients.index'), {
+            preserveState: true,
+            preserveScroll: true,
+        });
     }
 }
 </script>
