@@ -55,7 +55,20 @@ const menuOptions = [
         ),
         key: 'Patients',
         icon: renderIcon(IconUsers)
-    }
+    },
+    {
+        label: () => h(
+            Link,
+            {
+                href: route('reports.index'),
+            },
+            {
+                default: () => 'Отчеты'
+            }
+        ),
+        key: 'Reports',
+        icon: renderIcon(IconUsers)
+    },
 ]
 
 const userOptions = [
@@ -72,7 +85,7 @@ const currentRoute = computed(() => {
 })
 
 const characterView = computed(() => usePage().component === 'Patient/Show')
-const heartView = computed(() => usePage().component === 'Patients/Show')
+const heartView = computed(() => usePage().component === 'Patients/Show' || usePage().component === 'Reports/Index' || usePage().component === 'Reports/Show')
 
 const page = usePage()
 
