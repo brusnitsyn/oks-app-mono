@@ -183,8 +183,8 @@ const logout = () => {
                         class="p-4 px-[24px]"
                     >
                         &copy;
-                        <Link href="https://aokb28.su">Амурская областная клиническая больница</Link>
-                        2024
+                        <a href="https://aokb28.su" target="_blank">Амурская областная клиническая больница</a>
+                        2024 - 2025
                     </NLayoutFooter>
                 </NLayout>
             </div>
