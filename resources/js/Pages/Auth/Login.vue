@@ -68,7 +68,12 @@ function submit(e) {
     <NaiveProvider>
         <AuthenticationCard>
             <template #logo>
-                <NImage src="/assets/svg/logo-short.svg" preview-disabled />
+                <NSpace vertical align="center" :size="16">
+                    <NImage src="/assets/svg/logo-short.svg" preview-disabled />
+                    <div class="rounded-3xl bg-white py-3 px-4 drop-shadow-sm text-[#ec6608] font-medium">
+                        Регистр пациентов с ОКС
+                    </div>
+                </NSpace>
             </template>
 
             <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -77,10 +82,10 @@ function submit(e) {
 
             <NForm @submit.prevent="submit" :model="form" :rules="rules" ref="formRef">
                 <NFormItem label="Имя пользователя" path="login">
-                    <NInput v-model:value="form.login" placeholder="" />
+                    <NInput v-model:value="form.login" size="large" placeholder="" round />
                 </NFormItem>
                 <NFormItem label="Пароль" path="password">
-                    <NInput type="password" v-model:value="form.password" show-password-on="click" placeholder="" />
+                    <NInput type="password" v-model:value="form.password" size="large" show-password-on="click" placeholder="" round />
                 </NFormItem>
                 <!--            <div>-->
                 <!--                <InputLabel for="email" value="Email" />-->
@@ -116,7 +121,7 @@ function submit(e) {
                 <!--                </label>-->
                 <!--            </div>-->
 
-                <NButton type="primary" block :loading="form.processing" :disabled="form.processing" attr-type="submit">
+                <NButton class="mt-4" type="primary" size="large" block :loading="form.processing" :disabled="form.processing" attr-type="submit" round>
                     Войти
                 </NButton>
 
