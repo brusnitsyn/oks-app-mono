@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email',
         'role_id',
         'password',
+        'organization_id'
     ];
 
     /**
@@ -69,9 +70,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function role()
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function organization(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
     protected function defaultProfilePhotoUrl(): string
