@@ -87,51 +87,10 @@ function submit(e) {
                 <NFormItem label="Пароль" path="password">
                     <NInput type="password" v-model:value="form.password" size="large" show-password-on="click" placeholder="" round />
                 </NFormItem>
-                <!--            <div>-->
-                <!--                <InputLabel for="email" value="Email" />-->
-                <!--                <TextInput-->
-                <!--                    id="email"-->
-                <!--                    v-model="form.email"-->
-                <!--                    type="email"-->
-                <!--                    class="mt-1 block w-full"-->
-                <!--                    required-->
-                <!--                    autofocus-->
-                <!--                    autocomplete="username"-->
-                <!--                />-->
-                <!--                <InputError class="mt-2" :message="form.errors.email" />-->
-                <!--            </div>-->
-
-                <!--            <div class="mt-4">-->
-                <!--                <InputLabel for="password" value="Password" />-->
-                <!--                <TextInput-->
-                <!--                    id="password"-->
-                <!--                    v-model="form.password"-->
-                <!--                    type="password"-->
-                <!--                    class="mt-1 block w-full"-->
-                <!--                    required-->
-                <!--                    autocomplete="current-password"-->
-                <!--                />-->
-                <!--                <InputError class="mt-2" :message="form.errors.password" />-->
-                <!--            </div>-->
-
-                <!--            <div class="block mt-4">-->
-                <!--                <label class="flex items-center">-->
-                <!--                    <Checkbox v-model:checked="form.remember" name="remember" />-->
-                <!--                    <span class="ms-2 text-sm text-gray-600">Remember me</span>-->
-                <!--                </label>-->
-                <!--            </div>-->
 
                 <NButton class="mt-4" type="primary" size="large" block :loading="form.processing" :disabled="form.processing" attr-type="submit" round>
                     Войти
                 </NButton>
-
-                <!--            <div class="flex items-center justify-end mt-4">-->
-                <!--                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">-->
-                <!--                    Forgot your password?-->
-                <!--                </Link>-->
-
-
-                <!--            </div>-->
             </NForm>
         </AuthenticationCard>
     </NaiveProvider>
