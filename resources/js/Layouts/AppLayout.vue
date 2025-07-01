@@ -127,12 +127,12 @@ const logout = () => {
                                 <NDropdown v-if="user && isLargeScreen" trigger="click" placement="top-end" :options="userOptions" @select="(key, option) => option.onClick()">
                                     <NButton quaternary class="h-[73px] rounded-none">
                                         <NSpace align="center">
-                                            <NSpace vertical align="end" :size="2">
+                                            <NSpace vertical align="end" :size="4">
                                                 <NText class="font-semibold">
                                                     {{ user.name }}
                                                 </NText>
                                                 <NText>
-                                                    {{ user.login }}
+                                                    {{ user.organization_name }}
                                                 </NText>
                                             </NSpace>
                                             <NAvatar :src="user.profile_photo_url" round size="large" />
