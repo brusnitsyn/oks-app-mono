@@ -8,11 +8,8 @@ import {NCard} from "naive-ui";
             <slot name="logo" />
         </div>
 
-        <NCard class="max-w-md mt-6">
+        <NCard class="max-w-md mt-6 !rounded-3xl drop-shadow-sm">
             <slot />
         </NCard>
-<!--        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">-->
-<!--            <slot />-->
-<!--        </div>-->
     </div>
 </template>
