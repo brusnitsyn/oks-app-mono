@@ -15,7 +15,7 @@ import {
     NIcon,
     NImage, NAvatar, NText
 } from 'naive-ui'
-import {IconDoorExit, IconMenu3, IconReportAnalytics, IconUsers} from '@tabler/icons-vue'
+import {IconAdjustments, IconDoorExit, IconMenu3, IconReportAnalytics, IconUserCog, IconUsers} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
 import {useStorage} from "@vueuse/core";
@@ -68,6 +68,25 @@ const menuOptions = [
         ),
         key: 'Reports',
         icon: renderIcon(IconReportAnalytics)
+    },
+    {
+        label: 'Администрирование',
+        icon: renderIcon(IconAdjustments),
+        children: [
+            {
+                label: () => h(
+                    Link,
+                    {
+                        href: route('admin.users.index'),
+                    },
+                    {
+                        default: () => 'Учетные записи'
+                    }
+                ),
+                key: 'Admin',
+                icon: renderIcon(IconUserCog)
+            },
+        ],
     },
 ]
 
@@ -213,5 +232,8 @@ const logout = () => {
 <style scoped>
 :deep(.v-binder-follower-content >>> .n-popover-shared) {
     @apply !mt-0;
+}
+:deep(.n-menu-item-content) {
+    @apply !pl-6;
 }
 </style>
