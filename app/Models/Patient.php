@@ -41,8 +41,20 @@ class Patient extends Model
         'full_name',
 
         'fias_objectid',
-        'address'
+        'address',
+        'creater_user_id',
+        'organization_id'
     ];
+
+    public function creater()
+    {
+        return $this->belongsTo(User::class, 'creater_user_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
 
     public function medcards()
     {
