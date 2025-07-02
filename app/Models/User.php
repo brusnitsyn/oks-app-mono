@@ -70,6 +70,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function currentOrganization(): Organization
+    {
+        $organization_id = session('organization_id');
+        if (isset($organization_id)) {
+            return Organization::whereId($organization_id)->first();
+        }
+
+        return Organization::whereId($this->organization_id)->first();
+    }
+
     public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Role::class);
