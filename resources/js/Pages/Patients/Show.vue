@@ -8,6 +8,7 @@ import DataTableLegend from "@/Pages/Patients/Partials/DataTableLegend.vue";
 import SearchPatientInput from "@/Pages/Patients/Partials/SearchPatientInput.vue";
 import debounce from "@/Utils/debounce.js";
 import {router, usePage} from "@inertiajs/vue3";
+import {roles, useCheckRole} from "@/Composables/useRoleChecker.js";
 
 const page = usePage()
 const showModalCreatePatient = ref(false)
@@ -43,7 +44,7 @@ function onSearch() {
             Регистр пациентов с ОКС
         </template>
         <template #headermore>
-            <NButton type="primary" @click="showModalCreatePatient = true">
+            <NButton v-if="useCheckRole(roles.ADMIN) || useCheckRole(roles.DOCTOR)" type="primary" @click="showModalCreatePatient = true">
                 <template #icon>
                     <NIcon :component="IconSquareRoundedPlus" />
                 </template>

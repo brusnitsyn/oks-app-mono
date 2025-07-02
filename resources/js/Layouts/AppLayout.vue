@@ -20,6 +20,7 @@ import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
 import {useStorage} from "@vueuse/core";
 import {isLargeScreen, isMediumScreen, isSmallScreen} from "@/Utils/mediaQuery.js";
+import {roles, useCheckRole} from "@/Composables/useRoleChecker.js";
 
 defineProps({
     title: String,
@@ -72,6 +73,7 @@ const menuOptions = [
     {
         label: 'Администрирование',
         icon: renderIcon(IconAdjustments),
+        show: useCheckRole(roles.ADMIN),
         children: [
             {
                 label: () => h(
