@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('med_cards', function (Blueprint $table) {
+        Schema::table('patients', function (Blueprint $table) {
             $table->foreignIdFor(\App\Models\User::class, 'creater_user_id')->nullable();
             $table->foreignIdFor(\App\Models\Organization::class, 'organization_id')->nullable();
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('med_cards', function (Blueprint $table) {
+        Schema::table('patients', function (Blueprint $table) {
             $table->dropColumn('creater_user_id');
             $table->dropColumn('organization_id');
         });
