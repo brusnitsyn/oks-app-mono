@@ -4,6 +4,7 @@ import {NButton, NDropdown, NIcon} from "naive-ui";
 import {IconDots, IconPencil, IconSquareRoundedPlus, IconTrash} from "@tabler/icons-vue";
 import EditUserModal from "@/Pages/Admin/Users/Partials/EditUserModal.vue";
 import CreateUserModal from "@/Pages/Admin/Users/Partials/CreateUserModal.vue";
+import {router, usePage} from "@inertiajs/vue3";
 const props = defineProps({
     users: Array
 })
@@ -21,34 +22,38 @@ const renderIcon = (icon) => {
     }
 }
 
-const menuRowOptions = [
-    {
-        label: 'Редактировать',
-        key: 'edit',
-        icon: renderIcon(IconPencil),
-        onClick: (row) => {
-            currentUserEditId.value = row.id
-            hasShowModalEdit.value = true
+const menuRowOptions = (row) => {
+    return [
+        {
+            label: 'Редактировать',
+            key: 'edit',
+            icon: renderIcon(IconPencil),
+            onClick: (row) => {
+                currentUserEditId.value = row.id
+                hasShowModalEdit.value = true
+            }
+        },
+        {
+            type: 'divider',
+            show: !(row.id === usePage().props.auth.user.id)
+        },
+        {
+            label: 'Удалить',
+            key: 'delete',
+            icon: renderIcon(IconTrash),
+            onClick: (row) => {
+                deleteUser(row.id)
+            },
+            show: !(row.id === usePage().props.auth.user.id)
         }
-    },
-    {
-        type: 'divider'
-    },
-    {
-        label: 'Удалить',
-        key: 'delete',
-        icon: renderIcon(IconTrash),
-        onClick: () => {
-            hasShowModelDelete.value = true
-        }
-    }
-]
+    ]
+}
 
 const menuRowRender = (row) => h(
     NDropdown,
     {
         trigger: 'click',
-        options: menuRowOptions,
+        options: menuRowOptions(row),
         placement: 'bottom-end',
         onSelect: (key, itm) => {
             itm.onClick(row)
@@ -100,6 +105,17 @@ const columns = shallowRef([
         align: 'right'
     }
 ])
+
+const deleteUser = (userId) => {
+    router.delete(route('admin.users.delete', { user: userId }), {
+        onSuccess: () => {
+            router.reload()
+        },
+        onError: (err) => {
+            window.$message.error(err)
+        }
+    })
+}
 </script>
 
 <template>
