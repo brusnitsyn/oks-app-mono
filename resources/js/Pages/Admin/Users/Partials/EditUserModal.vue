@@ -84,7 +84,7 @@ const submitModal = () => {
                 <NInput v-model:value="userForm.login" />
             </NFormItem>
             <NFormItem label="Пароль">
-                <NInput v-model:value="userForm.password" />
+                <NInput v-model:value="userForm.password" type="password" show-password-toggle />
             </NFormItem>
             <NFormItem label="Имя">
                 <NInput v-model:value="userForm.name" />
