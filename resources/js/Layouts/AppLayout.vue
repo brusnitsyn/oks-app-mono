@@ -15,18 +15,28 @@ import {
     NIcon,
     NImage, NAvatar, NText
 } from 'naive-ui'
-import {IconAdjustments, IconDoorExit, IconMenu3, IconReportAnalytics, IconUserCog, IconUsers} from '@tabler/icons-vue'
+import {
+    IconAdjustments,
+    IconBuildingHospital,
+    IconDoorExit,
+    IconMenu3,
+    IconReportAnalytics,
+    IconUserCog,
+    IconUsers
+} from '@tabler/icons-vue'
 import Banner from '@/Components/Banner.vue'
 import NaiveProvider from "@/Layouts/NaiveProvider.vue";
 import {useStorage} from "@vueuse/core";
 import {isLargeScreen, isMediumScreen, isSmallScreen} from "@/Utils/mediaQuery.js";
 import {roles, useCheckRole} from "@/Composables/useRoleChecker.js";
+import ChangeOrganizationModal from "@/Layouts/Partials/ChangeOrganizationModal.vue";
 
 defineProps({
     title: String,
 });
 
 const showingNavigationDropdown = ref(false);
+const hasShowChangeOrganizationModal = shallowRef(false)
 
 // const switchToTeam = (team) => {
 //     router.put(route('current-team.update'), {
@@ -94,6 +104,17 @@ const menuOptions = [
 
 const userOptions = [
     {
+        label: 'Переключиться на другую МО',
+        key: 'change-organization',
+        icon: renderIcon(IconBuildingHospital),
+        show: useCheckRole(roles.ADMIN),
+        onClick: () => changeOrganization()
+    },
+    {
+        type: 'divider',
+        show: useCheckRole(roles.ADMIN)
+    },
+    {
         label: 'Выйти из учетной записи',
         key: 'user-exit',
         icon: renderIcon(IconDoorExit),
@@ -127,7 +148,11 @@ const headerClass = computed(() => {
 
 const logout = () => {
     router.post(route('logout'));
-};
+}
+
+const changeOrganization = () => {
+    hasShowChangeOrganizationModal.value = true
+}
 </script>
 
 <template>
@@ -228,6 +253,8 @@ const logout = () => {
                 </NDrawerContent>
             </NDrawer>
         </div>
+
+        <ChangeOrganizationModal v-model:show="hasShowChangeOrganizationModal" />
     </NaiveProvider>
 </template>
 
