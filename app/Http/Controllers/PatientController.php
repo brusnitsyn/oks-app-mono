@@ -16,7 +16,7 @@ class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::query();
+        $patients = Patient::query()->where('organization_id', auth()->user()->currentOrganization()->id);
         $sortColumn = request('sort_column');
         $sortOrder = request('sort_order');
 
@@ -180,8 +180,12 @@ class PatientController extends Controller
 
         if ($patient) {return;}
 
+        $patientData['organization_id'] = auth()->user()->currentOrganization()->id;
+        $patientData['creater_user_id'] = auth()->user()->id;
         $patient = Patient::create($patientData);
 
+        $medcardData['organization_id'] = auth()->user()->currentOrganization()->id;
+        $medcardData['creater_user_id'] = auth()->user()->id;
         $medcard = $patient->medcards()->create($medcardData);
 
         if ($medcardData['complication_ids'] && count($medcardData['complication_ids']) > 0)
