@@ -107,7 +107,7 @@ Route::middleware([
         });
     });
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware('hasRole:admin')->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
             Route::post('/', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
