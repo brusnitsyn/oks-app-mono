@@ -24,7 +24,13 @@ class MedCard extends Model
         'deleted_at', // Дата удаления из регистра
         'patient_id', // Пациент
         'lpu_id', // ЛПУ
+        'creater_user_id' // Создатель карты
     ];
+
+    public function creater(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creater_user_id');
+    }
 
     public function patient()
     {
