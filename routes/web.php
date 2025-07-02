@@ -116,6 +116,7 @@ Route::middleware([
                 Route::put('/', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
             });
         });
+        Route::put('change-organization', [\App\Http\Controllers\Admin\OrganizationController::class, 'changeOrganization'])->name('admin.change-organization');
     });
 //
 //    Route::prefix('api')->group(function () {

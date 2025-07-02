@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -33,11 +34,17 @@ class HandleInertiaRequests extends Middleware
         $user = auth()->user();
         if ($user === null) $userInfo = null;
         else {
+            $organization_id = session('organization_id');
+            if (isset($organization_id)) {
+                $organization = Organization::whereId($organization_id)->first();
+            } else {
+                $organization = null;
+            }
             $userInfo = [
                 'id' => $user->id,
                 'name' => $user->name,
-                'organization_name' => $user->organization->short_name,
-                'organization_id' => $user->organization->id,
+                'organization_name' => $organization ? $organization->short_name : $user->organization->short_name,
+                'organization_id' => $organization ? $organization->id : $user->organization->id,
                 'role' => $user->role->slug,
                 'profile_photo_url' => $user->profile_photo_url,
             ];
