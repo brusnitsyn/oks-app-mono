@@ -75,8 +75,8 @@ class UserController extends Controller
         redirect('admin.users.index');
     }
 
-    public function delete()
+    public function delete(Request $request, User $user)
     {
-
+        $user->delete();
     }
 }

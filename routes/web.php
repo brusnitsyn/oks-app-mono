@@ -111,9 +111,9 @@ Route::middleware([
         Route::prefix('users')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
             Route::post('/', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
-            Route::delete('/', [\App\Http\Controllers\Admin\UserController::class, 'delete'])->name('admin.users.delete');
             Route::prefix('{user}')->group(function () {
                 Route::put('/', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+                Route::delete('/', [\App\Http\Controllers\Admin\UserController::class, 'delete'])->name('admin.users.delete');
             });
         });
         Route::put('change-organization', [\App\Http\Controllers\Admin\OrganizationController::class, 'changeOrganization'])->name('admin.change-organization');
