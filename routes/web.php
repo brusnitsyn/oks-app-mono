@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportTemplateController;
 use Illuminate\Foundation\Application;
@@ -80,6 +82,39 @@ Route::middleware([
             }
 
             return DB::table($table)->get();
+        });
+
+        Route::prefix('admin')->group(function () {
+            Route::prefix('users')->group(function () {
+                Route::prefix('{user}')->group(function () {
+                    Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('api.admin.users.get');
+                });
+            });
+
+            Route::prefix('organizations')->group(function () {
+                Route::get('/', [OrganizationController::class, 'index'])->name('api.organizations.index');
+                Route::prefix('{organization}')->group(function () {
+
+                });
+            });
+
+            Route::prefix('roles')->group(function () {
+                Route::get('/', [RoleController::class, 'index'])->name('api.roles.index');
+                Route::prefix('{role}')->group(function () {
+
+                });
+            });
+        });
+    });
+
+    Route::prefix('admin')->group(function () {
+        Route::prefix('users')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+            Route::post('/', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');
+            Route::delete('/', [\App\Http\Controllers\Admin\UserController::class, 'delete'])->name('admin.users.delete');
+            Route::prefix('{user}')->group(function () {
+                Route::put('/', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+            });
         });
     });
 //
