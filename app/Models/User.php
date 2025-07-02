@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function hasRole(string $role): bool
+    {
+        return $this->role->slug === $role;
+    }
+
     public function organization(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Organization::class, 'organization_id');
