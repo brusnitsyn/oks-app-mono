@@ -78,9 +78,10 @@ class PatientController extends Controller
 
 //        dd($patients);
 
-        $patientsCollect->getCollection()->transform(function ($patient) {
+        $patientsCollect->getCollection()->transform(function (Patient $patient) {
             return [
                 'total' => $patient->total,
+                'address' => $patient->address,
                 'id' => $patient->id,
                 'full_name' => $patient->full_name,
                 'family' => $patient->family,

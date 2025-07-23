@@ -39,6 +39,7 @@ const defaultColumns = ref([
     {
         title: '№\nп/п',
         key: 'id',
+        minWidth: 65,
         width: 65,
         sorter: true,
         sortOrder: false,
@@ -227,6 +228,12 @@ const defaultColumns = ref([
         align: 'center',
         key: 'phone',
     },
+    {
+        title: 'Адрес проживания',
+        width: 150,
+        align: 'center',
+        key: 'address',
+    },
 ])
 
 function rowProps(row) {
@@ -282,25 +289,44 @@ const pagination = computed(() => {
         }
     }
 })
+
+const calculateScrollX = computed(() => {
+    // Суммируем ширину всех колонок
+    const totalWidth = defaultColumns.value.reduce((sum, col) => {
+        return sum + (col.width || 100); // 100 - дефолтная ширина, если не задана
+    }, 0);
+
+    // Возвращаем общую ширину + 20% запаса
+    return totalWidth * 1.05;
+})
 </script>
 
 <template>
-    <NDataTable
-        remote
-        ref="table"
-        class="max-h-[calc(100vh-348px)] min-h-[calc(100vh-348px)] h-[calc(100vh-348px)]"
-        flex-height
-        bordered
-        @update:sorter="handleSorterChange"
-        :row-props="rowProps"
-        :single-line="false"
-        :pagination="pagination"
-        v-model:data="patients.data"
-        :columns="defaultColumns">
-    </NDataTable>
+    <div class="table-container">
+        <NDataTable
+            remote
+            ref="table"
+            class="max-h-[calc(100vh-348px)] min-h-[calc(100vh-348px)] h-[calc(100vh-348px)]"
+            flex-height
+            bordered
+            :scroll-x="calculateScrollX"
+            style="min-width: 100%"
+            @update:sorter="handleSorterChange"
+            :row-props="rowProps"
+            :single-line="false"
+            :pagination="pagination"
+            v-model:data="patients.data"
+            :columns="defaultColumns">
+        </NDataTable>
+    </div>
 </template>
 
 <style scoped>
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
 ::v-deep(.n-data-table-th__title) {
     @apply leading-4;
 }
