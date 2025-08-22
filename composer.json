@@ -15,6 +15,7 @@
         "laravel/scout": "^10.12",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
+        "sentry/sentry-laravel": "^4.15",
         "spatie/laravel-backup": "^9.2",
         "tightenco/ziggy": "^2.0",
         "typesense/typesense-php": "^4.9"
