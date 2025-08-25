@@ -17,6 +17,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/error', function () {
+    throw new Exception('Test error!');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
