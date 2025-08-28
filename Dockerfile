@@ -28,8 +28,17 @@ RUN apt-get install -y nodejs
 # Создание рабочей директории
 WORKDIR /var/www/html
 
-# Копирование файлов приложения
+# Копирование только composer файлов сначала
+COPY composer.json composer.lock* ./
+
+# Установка зависимостей Composer
+RUN composer install --no-dev --no-autoloader --no-scripts
+
+# Копирование остальных файлов
 COPY . .
+
+# Генерация autoloader
+RUN composer dump-autoload --optimize
 
 # Установка прав
 RUN chown -R www-data:www-data /var/www/html/storage
@@ -37,8 +46,7 @@ RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage
 RUN chmod -R 775 /var/www/html/bootstrap/cache
 
-# Установка зависимостей
-RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+# Если есть frontend зависимости
+RUN if [ -f "package.json" ]; then npm install && npm run build; fi
 
 EXPOSE 9000
