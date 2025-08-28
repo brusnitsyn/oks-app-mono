@@ -18,7 +18,7 @@ services:
     container_name: oks-nginx
     restart: unless-stopped
     ports:
-      - "53:8000"
+      - "54:80"
     volumes:
       - .:/var/www/html
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
