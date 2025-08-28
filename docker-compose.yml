@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: oks-app
+    container_name: oks-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - oks-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: oks-nginx
+    restart: unless-stopped
+    ports:
+      - "53:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - oks-network
+    depends_on:
+      - app
+
+networks:
+  oks-network:
+    driver: bridge
