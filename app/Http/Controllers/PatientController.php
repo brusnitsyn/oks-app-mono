@@ -87,42 +87,42 @@ class PatientController extends Controller
                 'family' => $patient->family,
                 'name' => $patient->name,
                 'ot' => $patient->ot,
-                'extract_at' => $patient->lastMedcard->extract_at,
+                'extract_at' => $patient->lastMedcard?->extract_at,
                 'brith_at' => $patient->brith_at,
-                'ds' => $patient->lastMedcard->mkb->ds,
-                'disp_status' => $patient->lastMedcard->disp ? 'Взят' : 'Не взят',
-                'med_drugs_status' => $patient->lastMedcard->medDrugsStatus->name,
-                'additional_treatment' => $patient->lastMedcard->medCardAdditionalTreatment->short_name,
-                'has_closed' => (bool)$patient->lastMedcard->closed_at,
+                'ds' => $patient->lastMedcard?->mkb->ds,
+                'disp_status' => $patient->lastMedcard?->disp ? 'Взят' : 'Не взят',
+                'med_drugs_status' => $patient->lastMedcard?->medDrugsStatus->name,
+                'additional_treatment' => $patient->lastMedcard?->medCardAdditionalTreatment->short_name,
+                'has_closed' => (bool)$patient->lastMedcard?->closed_at,
                 'day3' => [
-                    'call_at' => $patient->lastMedcard->day3->call_at,
-                    'called_at' => $patient->lastMedcard->day3->called_at,
-                    'control_call_result_id' => $patient->lastMedcard->day3->control_call_result_id,
-                    'survey_result_id' => $patient->lastMedcard->day3->survey_result_id,
+                    'call_at' => $patient->lastMedcard?->day3->call_at,
+                    'called_at' => $patient->lastMedcard?->day3->called_at,
+                    'control_call_result_id' => $patient->lastMedcard?->day3->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard?->day3->survey_result_id,
                 ],
                 'mes1' => [
-                    'call_at' => $patient->lastMedcard->mes1->call_at,
-                    'called_at' => $patient->lastMedcard->mes1->called_at,
-                    'control_call_result_id' => $patient->lastMedcard->mes1->control_call_result_id,
-                    'survey_result_id' => $patient->lastMedcard->mes1->survey_result_id,
+                    'call_at' => $patient->lastMedcard?->mes1->call_at,
+                    'called_at' => $patient->lastMedcard?->mes1->called_at,
+                    'control_call_result_id' => $patient->lastMedcard?->mes1->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard?->mes1->survey_result_id,
                 ],
                 'mes3' => [
-                    'call_at' => $patient->lastMedcard->mes3->call_at,
-                    'called_at' => $patient->lastMedcard->mes3->called_at,
-                    'control_call_result_id' => $patient->lastMedcard->mes3->control_call_result_id,
-                    'survey_result_id' => $patient->lastMedcard->mes3->survey_result_id,
+                    'call_at' => $patient->lastMedcard?->mes3->call_at,
+                    'called_at' => $patient->lastMedcard?->mes3->called_at,
+                    'control_call_result_id' => $patient->lastMedcard?->mes3->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard?->mes3->survey_result_id,
                 ],
                 'mes6' => [
-                    'call_at' => $patient->lastMedcard->mes6->call_at,
-                    'called_at' => $patient->lastMedcard->mes6->called_at,
-                    'control_call_result_id' => $patient->lastMedcard->mes6->control_call_result_id,
-                    'survey_result_id' => $patient->lastMedcard->mes6->survey_result_id,
+                    'call_at' => $patient->lastMedcard?->mes6->call_at,
+                    'called_at' => $patient->lastMedcard?->mes6->called_at,
+                    'control_call_result_id' => $patient->lastMedcard?->mes6->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard?->mes6->survey_result_id,
                 ],
                 'mes12' => [
-                    'call_at' => $patient->lastMedcard->mes12->call_at,
-                    'called_at' => $patient->lastMedcard->mes12->called_at,
-                    'control_call_result_id' => $patient->lastMedcard->mes12->control_call_result_id,
-                    'survey_result_id' => $patient->lastMedcard->mes12->survey_result_id,
+                    'call_at' => $patient->lastMedcard?->mes12->call_at,
+                    'called_at' => $patient->lastMedcard?->mes12->called_at,
+                    'control_call_result_id' => $patient->lastMedcard?->mes12->control_call_result_id,
+                    'survey_result_id' => $patient->lastMedcard?->mes12->survey_result_id,
                 ],
                 'phone' => $patient->phone
             ];
@@ -181,13 +181,27 @@ class PatientController extends Controller
 
         if ($patient) {return;}
 
+        DB::beginTransaction();
+
         $patientData['organization_id'] = auth()->user()->currentOrganization()->id;
         $patientData['creater_user_id'] = auth()->user()->id;
         $patient = Patient::create($patientData);
 
+        if (!$patient) {
+            DB::rollBack();
+            return;
+        }
+
         $medcardData['organization_id'] = auth()->user()->currentOrganization()->id;
         $medcardData['creater_user_id'] = auth()->user()->id;
         $medcard = $patient->medcards()->create($medcardData);
+
+        if (!$medcard) {
+            DB::rollBack();
+            return;
+        }
+
+        DB::commit();
 
         if ($medcardData['complication_ids'] && count($medcardData['complication_ids']) > 0)
         {
@@ -229,12 +243,12 @@ class PatientController extends Controller
             'lastMedcard.control_call.survey.surveyAnswers',
         ])->find($patient->id);
 
-        foreach ($patient->lastMedcard->control_call as $cc) {
+        foreach ($patient->lastMedcard?->control_call as $cc) {
             $cc->answers = $cc->answers();
         }
 
-        $complication_ids = $patient->lastMedcard->complication_ids->pluck('id');
-        $mkb_attendant_ids = $patient->lastMedcard->mkb_attendant_ids->pluck('id');
+        $complication_ids = $patient->lastMedcard?->complication_ids->pluck('id');
+        $mkb_attendant_ids = $patient->lastMedcard?->mkb_attendant_ids->pluck('id');
 
         $patient = $patient->toArray();
         $patient['last_medcard']['complication_ids'] = $complication_ids;
@@ -334,11 +348,11 @@ class PatientController extends Controller
             'med_card_reason_close_id' => $data['med_card_reason_close_id'],
         ]);
 
-        $patient->lastMedcard->disp()->update([
+        $patient->lastMedcard?->disp()->update([
             'closed_at' => $data['closed_at']
         ]);
 
-        $patient->lastMedcard->disp()->delete();
+        $patient->lastMedcard?->disp()->delete();
         $patient->lastMedcard()->delete();
 
         return Redirect::route('patients.index');
@@ -347,14 +361,14 @@ class PatientController extends Controller
     public function restore(Patient $patient)
     {
         $patient->lastMedcard()->restore();
-        $patient->lastMedcard->disp()->restore();
+        $patient->lastMedcard?->disp()->restore();
 
         $patient->lastMedcard()->update([
             'closed_at' => null,
             'med_card_reason_close_id' => null,
         ]);
 
-        $patient->lastMedcard->disp()->update([
+        $patient->lastMedcard?->disp()->update([
             'closed_at' => null
         ]);
 
