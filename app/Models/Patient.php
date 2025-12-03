@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
 use Laravel\Scout\Searchable;
 
 class Patient extends Model
@@ -14,6 +15,15 @@ class Patient extends Model
     {
         static::saving(function (Patient $patient) {
             $patient->full_name = "$patient->family $patient->name $patient->ot";
+        });
+
+        static::saved(function (Patient $patient) {
+            $response = Http::get(config('fias.url') . "/$patient->fias_objectid/district");
+            $data = $response->json();
+            $patient->fias_district_objectid = $data['objectid'];
+            $patient->district = $data['full_name'];
+
+            $patient->saveQuietly();
         });
     }
 
@@ -43,7 +53,10 @@ class Patient extends Model
         'fias_objectid',
         'address',
         'creater_user_id',
-        'organization_id'
+        'organization_id',
+
+        'fias_district_objectid',
+        'district',
     ];
 
     public function creater()
