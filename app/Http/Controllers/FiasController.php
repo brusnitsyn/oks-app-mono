@@ -12,7 +12,7 @@ class FiasController extends Controller
     {
         $search = $request->input('search');
 
-        $response = Http::post(env('FIAS_URL'), [
+        $response = Http::post(config('fias.url') . '/find', [
             'search' => $search,
             'filter_by' => [
                 'level' => '[5,6]',
