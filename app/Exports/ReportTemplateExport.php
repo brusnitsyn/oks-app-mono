@@ -105,8 +105,17 @@ class ReportTemplateExport implements FromArray, WithHeadings, WithStyles, Shoul
                     $lastColumn = $sheet->getHighestColumn();
                 }
 
-                $filterRange = 'A4:' . $lastColumn . '4';
-                $sheet->freezePane('A5');
+                if (isset($this->params['disp_status'])
+                    || (isset($this->params['period_start'])
+                        && isset($this->params['period_end'])))
+                {
+                    $filterRange = 'A4:' . $lastColumn . '4';
+                    $sheet->freezePane('A5');
+                } else {
+                    $filterRange = 'A3:' . $lastColumn . '3';
+                    $sheet->freezePane('A4');
+                }
+
                 $sheet->setAutoFilter($filterRange);
             },
         ];
