@@ -94,11 +94,45 @@ class ReportTemplateExport implements FromArray, WithHeadings, WithStyles, Shoul
                     ],
                 ]);
 
+                // Находим реальную последнюю колонку с данными
+                $lastColumnWithData = $this->getLastColumnWithData($sheet, $lastRow);
+
+                // Если найдена реальная последняя колонка, используем её
+                if ($lastColumnWithData) {
+                    $lastColumn = $lastColumnWithData;
+                } else {
+                    // Если не нашли, берем максимальную из заголовков
+                    $lastColumn = $sheet->getHighestColumn();
+                }
+
                 $filterRange = 'A4:' . $lastColumn . '4';
                 $sheet->freezePane('A5');
                 $sheet->setAutoFilter($filterRange);
             },
         ];
+    }
+
+    // Метод для поиска реальной последней колонки с данными
+    protected function getLastColumnWithData($sheet, $lastRow): ?string
+    {
+        // Проверяем строку с заголовками (4-я строка)
+        $headerRow = 4;
+        $highestColumn = $sheet->getHighestColumn();
+
+        // Преобразуем букву колонки в число
+        $maxColIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+
+        // Идем от последней колонки к первой, ищем первую непустую ячейку в строке заголовков
+        for ($col = $maxColIndex; $col >= 1; $col--) {
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $cellValue = $sheet->getCell($columnLetter . $headerRow)->getValue();
+
+            if (!empty($cellValue) || $cellValue === '0') {
+                return $columnLetter;
+            }
+        }
+
+        return null;
     }
 
     public function styles(Worksheet $sheet)
