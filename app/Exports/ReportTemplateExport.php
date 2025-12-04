@@ -93,6 +93,10 @@ class ReportTemplateExport implements FromArray, WithHeadings, WithStyles, Shoul
                         ],
                     ],
                 ]);
+
+                $filterRange = 'A4:' . $lastColumn . '4';
+                $sheet->freezePane('A5');
+                $sheet->setAutoFilter($filterRange);
             },
         ];
     }
