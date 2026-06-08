@@ -142,7 +142,7 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.day3.control_call_result_id)} ${getClassForRowControlOption(row.day3.survey_result_id)}`
+                    class: `rounded flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.day3.control_call_result_id)} ${getClassForRowControlOption(row.day3.survey_result_id)}`
                 },
                 {
                     default: () => (row.day3.control_call_result_id !== null && (row.day3.control_call_result_id === 1 || row.day3.control_call_result_id === 3)) ? '' : row.day3.control_call_result_id === 2 ? (row.day3.called_at ? format(row.day3.called_at, 'dd.MM') : 'Ошибка') : (row.day3.call_at ? format(row.day3.call_at, 'dd.MM.yy') : 'Ошибка')
@@ -160,7 +160,7 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes1.control_call_result_id)} ${getClassForRowControlOption(row.mes1.survey_result_id)}`
+                    class: `rounded flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes1.control_call_result_id)} ${getClassForRowControlOption(row.mes1.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes1.control_call_result_id !== null && (row.mes1.control_call_result_id === 1 || row.mes1.control_call_result_id === 3)) ? '' : row.mes1.control_call_result_id === 2 ? (row.mes1.called_at ? format(row.mes1.called_at, 'dd.MM') : 'Ошибка') : (row.mes1.call_at ? format(row.mes1.call_at, 'dd.MM.yy') : 'Ошибка')
@@ -178,7 +178,7 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes3.control_call_result_id)} ${getClassForRowControlOption(row.mes3.survey_result_id)}`
+                    class: `rounded flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes3.control_call_result_id)} ${getClassForRowControlOption(row.mes3.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes3.control_call_result_id !== null && (row.mes3.control_call_result_id === 1 || row.mes3.control_call_result_id === 3)) ? '' : row.mes3.control_call_result_id === 2 ? (row.mes3.called_at ? format(row.mes3.called_at, 'dd.MM') : 'Ошибка') : (row.mes3.call_at ? format(row.mes3.call_at, 'dd.MM.yy') : 'Ошибка')
@@ -196,7 +196,7 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes6.control_call_result_id)} ${getClassForRowControlOption(row.mes6.survey_result_id)}`
+                    class: `rounded flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes6.control_call_result_id)} ${getClassForRowControlOption(row.mes6.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes6.control_call_result_id !== null && (row.mes6.control_call_result_id === 1 || row.mes6.control_call_result_id === 3)) ? '' : row.mes6.control_call_result_id === 2 ? (row.mes6.called_at ? format(row.mes6.called_at, 'dd.MM') : 'Ошибка') : (row.mes6.call_at ? format(row.mes6.call_at, 'dd.MM.yy') : 'Ошибка')
@@ -214,7 +214,7 @@ const defaultColumns = ref([
             return h(
                 'div',
                 {
-                    class: `rounded m-1 flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes12.control_call_result_id)} ${getClassForRowControlOption(row.mes12.survey_result_id)}`
+                    class: `rounded flex flex-col justify-center items-center border-4 h-[34px] ${getClassForRowCallResult(row.mes12.control_call_result_id)} ${getClassForRowControlOption(row.mes12.survey_result_id)}`
                 },
                 {
                     default: () => (row.mes12.control_call_result_id !== null && (row.mes12.control_call_result_id === 1 || row.mes12.control_call_result_id === 3)) ? '' : row.mes12.control_call_result_id === 2 ? (row.mes12.called_at ? format(row.mes12.called_at, 'dd.MM') : 'Ошибка') : (row.mes12.call_at ? format(row.mes12.call_at, 'dd.MM.yy') : 'Ошибка')
