@@ -93,6 +93,21 @@ class PatientController extends Controller
             $patientsCollect = $patientsCollect->whereHas('lastMedcard', function ($query) use ($now) {
                 $query->whereNotNull('closed_at');
             });
+        } else if ($patientSort === 'next-day') {
+            $nextDay = Carbon::now()->addDays()->format('Y-m-d');
+            $patientsCollect = $patientsCollect->whereHas('lastMedcard', function ($query) use ($nextDay) {
+                $query->whereNull('closed_at')
+                    ->where(function ($q) use ($nextDay) {
+                        $periods = ['day3', 'mes1', 'mes3', 'mes6', 'mes12'];
+
+                        foreach ($periods as $period) {
+                            $q->orWhereHas($period, function ($q2) use ($nextDay) {
+                                $q2->whereDate(DB::raw('(to_timestamp(call_at / 1000) at time zone \'Asia/Yakutsk\')'), $nextDay)
+                                    ->whereNull('called_at');
+                            });
+                        }
+                    });
+            });
         }
 
 

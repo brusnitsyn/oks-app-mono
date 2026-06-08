@@ -55,6 +55,10 @@ const patientSortOptions = [
         label: 'Позвонить сегодня',
         value: 'today'
     },
+    {
+        label: 'Позвонить завтра',
+        value: 'next-day'
+    },
 ]
 
 function onSelectPatientSort(sort) {
@@ -88,9 +92,9 @@ function onApplyPatientFilters(search_value, patient_sort) {
                 <NFlex justify="space-between" align="center" :wrap="false">
                     <SearchPatientInput v-model:value="searchValueDebounce" @click="onSearch" />
                     <NFlex justify="end">
-                        <NFormItem label="Отображение пациентов" label-placement="left" :show-feedback="false">
+                        <NFormItem label="Контроль" label-placement="left" :show-feedback="false">
                             <NSelect class="w-[220px]"
-                                     placeholder="Отображение"
+                                     placeholder="Контроль"
                                      :options="patientSortOptions"
                                      v-model:value="patientSort"
                                      @update:value="v => onSelectPatientSort(v)"
