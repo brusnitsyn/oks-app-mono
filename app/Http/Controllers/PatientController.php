@@ -69,7 +69,8 @@ class PatientController extends Controller
 
                         foreach ($periods as $period) {
                             $q->orWhereHas($period, function ($q2) use ($now) {
-                                $q2->whereDate(DB::raw('(to_timestamp(call_at / 1000) at time zone \'Asia/Yakutsk\')'), $now);
+                                $q2->whereDate(DB::raw('(to_timestamp(call_at / 1000) at time zone \'Asia/Yakutsk\')'), $now)
+                                    ->whereNull('called_at');
                             });
                         }
                     });
