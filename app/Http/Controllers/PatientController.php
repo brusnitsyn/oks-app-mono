@@ -19,31 +19,16 @@ class PatientController extends Controller
         $patients = Patient::query()->where('organization_id', auth()->user()->currentOrganization()->id);
         $sortColumn = request('sort_column');
         $sortOrder = request('sort_order');
+        $patientSort = request('patient_sort');
 
         $filters = [
-            request('search_field') => request('search_value')
+            request('search_field') => request('search_value'),
         ];
 
         $patients = $patients->filter($filters);
 
         if (request('search_value')) {
 
-//            switch(request('search_field')) {
-//                case 'fio': {
-//                    $fio = explode(' ', request('search_value'));
-//
-//                    $family = $fio[0];
-//                    $name = $fio[1] ?? null;
-//                    $ot = $fio[2] ?? null;
-//
-//                    $patients = $patients->where('family', 'ilike', '%' . $family . '%')
-//                        ->where('name', 'like', '%' . $name . '%')
-//                        ->where('ot', 'like', '%' . $ot . '%');
-//                }
-//                default: {
-//                    $patients = $patients->where(request('search_field'), 'ilike', request('search_value') . '%');
-//                }
-//            }
         }
 
 //        if (request('order_by')) {
@@ -72,9 +57,45 @@ class PatientController extends Controller
                 'lastMedcard.mes1',
                 'lastMedcard.mes3',
                 'lastMedcard.mes6',
-                'lastMedcard.mes12'
-            ])
-            ->paginate(30);
+                'lastMedcard.mes12',
+            ]);
+
+        $now = Carbon::now()->format('Y-m-d');
+        if ($patientSort === 'today') {
+            $patientsCollect = $patientsCollect->whereHas('lastMedcard', function ($query) use ($now) {
+                $query->whereNull('closed_at')
+                    ->where(function ($q) use ($now) {
+                        $periods = ['day3', 'mes1', 'mes3', 'mes6', 'mes12'];
+
+                        foreach ($periods as $period) {
+                            $q->orWhereHas($period, function ($q2) use ($now) {
+                                $q2->whereDate(DB::raw('(to_timestamp(call_at / 1000) at time zone \'Asia/Yakutsk\')'), $now);
+                            });
+                        }
+                    });
+            });
+        } else if ($patientSort === 'timeout') {
+            $patientsCollect = $patientsCollect->whereHas('lastMedcard', function ($query) use ($now) {
+                $query->whereNull('closed_at')
+                    ->where(function ($q) use ($now) {
+                        $periods = ['day3', 'mes1', 'mes3', 'mes6', 'mes12'];
+
+                        foreach ($periods as $period) {
+                            $q->orWhereHas($period, function ($q2) use ($now) {
+                                $q2->whereDate(DB::raw('(to_timestamp(call_at / 1000) at time zone \'Asia/Yakutsk\')'), '<', $now)
+                                    ->whereNull('called_at');
+                            });
+                        }
+                    });
+            });
+        } else if ($patientSort === 'outcome') {
+            $patientsCollect = $patientsCollect->whereHas('lastMedcard', function ($query) use ($now) {
+                $query->whereNotNull('closed_at');
+            });
+        }
+
+
+        $patientsCollect = $patientsCollect->paginate(30);
 
 //        dd($patients);
 

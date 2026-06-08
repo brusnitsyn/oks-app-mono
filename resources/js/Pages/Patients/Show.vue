@@ -14,6 +14,7 @@ const page = usePage()
 const showModalCreatePatient = ref(false)
 
 const searchValue = ref(page.props.ziggy.query.search_value ?? '')
+const patientSort = ref(page.props.ziggy.query.patient_sort ?? 'all')
 const searchValueDebounce = computed({
     get() {
         return searchValue.value
@@ -36,6 +37,36 @@ function onSearch() {
         only: ['patients']
     })
 }
+
+const patientSortOptions = [
+    {
+        label: 'Все',
+        value: 'all'
+    },
+    {
+        label: 'Выбывшие',
+        value: 'outcome'
+    },
+    {
+        label: 'Просроченные',
+        value: 'timeout'
+    },
+    {
+        label: 'Позвонить сегодня',
+        value: 'today'
+    },
+]
+
+function onSelectPatientSort(sort) {
+    onApplyPatientFilters(searchValue.value, sort)
+}
+
+function onApplyPatientFilters(search_value, patient_sort) {
+    router.reload({
+        data: { search_field: 'full_name', search_value, patient_sort, page: 1, },
+        only: ['patients']
+    })
+}
 </script>
 
 <template>
@@ -54,7 +85,19 @@ function onSearch() {
 
         <template #subheader>
             <NSpace vertical>
-                <SearchPatientInput v-model:value="searchValueDebounce" @click="onSearch" />
+                <NFlex justify="space-between" align="center" :wrap="false">
+                    <SearchPatientInput v-model:value="searchValueDebounce" @click="onSearch" />
+                    <NFlex justify="end">
+                        <NFormItem label="Отображение пациентов" label-placement="left" :show-feedback="false">
+                            <NSelect class="w-[220px]"
+                                     placeholder="Отображение"
+                                     :options="patientSortOptions"
+                                     v-model:value="patientSort"
+                                     @update:value="v => onSelectPatientSort(v)"
+                            />
+                        </NFormItem>
+                    </NFlex>
+                </NFlex>
                 <DataTableLegend />
             </NSpace>
         </template>
